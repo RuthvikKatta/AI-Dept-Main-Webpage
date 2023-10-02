@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="./projects_page_css.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="./projects_style.css">
     <title>Project Display Page</title>
 </head>
 
 <body>
     <app-header></app-header>
-    <h1>Project Search</h1>
     <form id="search-form" method="POST">
+        <h1 class="project-title">Project Search</h1>
         <?php
         // Establish a database connection (you should fill in your database details)
         $servername = "localhost";
@@ -69,7 +70,7 @@
             $domain = $_POST["domain"];
             $type = $_POST["type"];
 
-            $sql = "SELECT project_id, academic_year, project_title, domain, project_type, project_link
+            $sql = "SELECT project_id, academic_year, project_title, domain, project_type
                     FROM $tablename
                     WHERE academic_year LIKE CONCAT('%', '$academicYear', '%')
                     AND domain LIKE CONCAT('%', '$domain', '%')
@@ -101,7 +102,7 @@
                 $c = 0;
                 foreach ($data as $d) {
                     $c = $c + 1;
-                    $sql1 = "SELECT project_id, academic_year, project_title, domain, project_type, project_link
+                    $sql1 = "SELECT project_id, academic_year, project_title, domain, project_type
                         FROM $tablename
                         WHERE project_id = '$d'";
 
@@ -113,14 +114,13 @@
                         $ProjectTitle = $row['project_title'];
                         $Domain = $row['domain'];
                         $ProjectType = $row['project_type'];
-                        $ProjectLink = $row['project_link'];
                     }
                     echo '<tr>';
                     echo '<td>' . $c . '</td>
                         <td>' . $AcademicYear . '</td>  
                         <td>' . $ProjectTitle . '</td>
                         <td>' . $Domain . '</td>
-                        <td><a href="project_page.php?id=' . $pid . '">View Details</a></td>';
+                        <td><a class="next-page" href="project_page.php?id=' . $pid . '">View Details</a></td>';
                     echo '</tr>';
                 }
             } else {
@@ -133,25 +133,13 @@
         mysqli_close($conn);
         ?>
 </body>
+<script src="../Elements.js"></script>
 <script>
-    const academicYear = document.getElementById('academic-year');
-    const type = document.getElementById('type');
-    const domain = document.getElementById('domain');
+    if(performance.navigation.type === 1) {
 
-    if (performance.navigation.type === 1) {
-
-        var table = document.getElementById('data-table');
-        if (table)
-            table.remove();
-
-        academicYear.value = academicYear.value;
-        type.value = type.value;
-        domain.value = domain.value;
-
-        console.log(academicYear.value)
-        console.log(type.value)
-        console.log(domain.value)
+    var table = document.getElementById('data-table');
+    if(table)
+        table.remove();
     }
 </script>
-
 </html>
