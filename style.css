@@ -13,7 +13,7 @@ body {
     background-color: hsl(0, 0%, 100%);
 }
 
-header {
+app-header {
     display: flex;
     padding: 1.75rem 2rem;
     justify-content: space-between;
@@ -22,7 +22,7 @@ header {
     position: relative;
 }
 
-header .logo {
+app-header .logo {
     background-color: hsl(0, 0%, 100%);
     background-image: url(./assets/VJIT_logo_2023.png);
     background-repeat: no-repeat;
@@ -31,7 +31,7 @@ header .logo {
     height: 65px;
 }
 
-header .dept-name {
+app-header .dept-name {
     letter-spacing: 2px;
     color: hsl(0, 0%, 100%);
     font-weight: 700;
@@ -40,14 +40,15 @@ header .dept-name {
     top: 0;
     right: 0;
     display: flex;
-    gap: 5px
+    gap: 5px;
+    text-transform: uppercase;
 }
 
-header .dept-name span:first-child {
+app-header .dept-name span:first-child {
     display: none;
 }
 
-header .navigation-bar {
+app-header .navigation-bar {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -62,8 +63,8 @@ header .navigation-bar {
     cursor: pointer;
 }
 
-header .fa-bars,
-header .fa-xmark {
+app-header .fa-bars,
+app-header .fa-xmark {
     display: none;
     cursor: pointer;
 }
@@ -274,25 +275,25 @@ header .fa-xmark {
 
 @media (max-width: 520px) {
 
-    header {
+    app-header {
         padding: 1.25rem;
         overflow: visible;
     }
 
-    header .dept-name {
+    app-header .dept-name {
         position: relative;
         font-size: 20px;
     }
 
-    header .dept-name span:first-child {
+    app-header .dept-name span:first-child {
         display: block;
     }  
 
-    header .dept-name span:last-child {
+    app-header .dept-name span:last-child {
         display: none;
     }    
 
-    header .logo {
+    app-header .logo {
         background-color: hsl(0, 0%, 100%);
         background-image: url(./assets/VJIT_logo_2023_mobile.png);
         background-repeat: no-repeat;
@@ -302,12 +303,12 @@ header .fa-xmark {
         height: 3rem;
     }
 
-    header .navigation-bar {
+    app-header .navigation-bar {
         display: none;
         padding-inline: 0rem;
     }
 
-    header .navigation-bar.expand {
+    app-header .navigation-bar.expand {
         display: block;
         position: absolute;
         bottom: -18rem;
@@ -325,7 +326,7 @@ header .fa-xmark {
         display: none;
     }
 
-    header .fa-bars {
+    app-header .fa-bars {
         display: block;
         color: hsl(0, 0%, 100%);
     }

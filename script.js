@@ -4,7 +4,7 @@ const dots = document.getElementsByClassName("dot");
 const deptName = document.querySelector('.dept-name');
 const hamburger = document.querySelector('.fa-bars');
 const close = document.querySelector('.fa-xmark');
-const navBar = document.querySelector('.navigation-bar')
+const navBar = document.querySelector('.navigation-bar');
 
 dropDowns.forEach((dropDown) => {
     const arrowElement = dropDown.querySelector('.fa-solid');
