@@ -1,0 +1,114 @@
+* {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+table,
+tr,
+td,
+th {
+    border: 2px solid hsl(354, 74%, 49%);
+    padding: 0;
+    margin: auto;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+th {
+    background-color: hsl(354, 74%, 49%);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-right: 2px solid white;
+}
+
+table {
+    margin-bottom: 2rem;
+}
+
+.download-button, .next-page {
+    text-decoration: none;
+    cursor: pointer;
+    color: limegreen;
+    animation: blink 2s linear infinite;
+}
+
+.project-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    width: 90%;
+    padding: 2rem;
+    border: 2px solid hsl(354, 74%, 49%);
+    border-radius: 10px;
+}
+
+th:last-child {
+    border-right: none;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    margin: auto;
+    gap: 5px;
+    margin-top: 2rem;
+    padding: 2rem;
+    border: 2px solid hsl(354, 74%, 49%);
+    border-radius: 10px;
+}
+
+select {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+form input[type="submit"] {
+    margin-top: 20px;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    color: white;
+    background: hsl(354, 74%, 49%);
+    border: none;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+table {
+    margin-top: 3rem;
+    width: 90%;
+}
+
+.project-title {
+    text-align: center;
+    color: hsl(354, 74%, 49%);
+    margin-bottom: 1rem;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    25% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
