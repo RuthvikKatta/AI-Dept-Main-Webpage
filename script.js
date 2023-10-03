@@ -1,21 +1,9 @@
-const dropDowns = document.querySelectorAll('.dropdown');
 const slides = document.getElementsByClassName("mySlides");
 const dots = document.getElementsByClassName("dot");
 const deptName = document.querySelector('.dept-name');
 const hamburger = document.querySelector('.fa-bars');
 const close = document.querySelector('.fa-xmark');
 const navBar = document.querySelector('.navigation-bar');
-
-dropDowns.forEach((dropDown) => {
-    const arrowElement = dropDown.querySelector('.fa-solid');
-    dropDown.addEventListener('mouseover', () => {
-        arrowElement.classList = 'fa-solid fa-caret-down';
-    })
-
-    dropDown.addEventListener('mouseout', () => {
-        arrowElement.classList = 'fa-solid fa-caret-up';
-    })
-})
 
 var slideIndex = 0;
 var slideIndexCurrent = 0;
@@ -61,7 +49,3 @@ function showSlides() {
 
     setTimeout(showSlides, 4000);
 }
-
-hamburger.addEventListener('click', () => {
-    navBar.classList.toggle('expand');
-})

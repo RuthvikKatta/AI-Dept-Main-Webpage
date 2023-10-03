@@ -51,41 +51,42 @@ app-header .dept-name span:first-child {
 
 app-header .navigation-bar {
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-end;
     align-items: center;
     gap: 2.5rem;
-    width: 70%;
-    padding-inline: 0rem 3rem;
+    width: 75%;
+    padding-inline: 10rem 2rem;
     position: absolute;
-    background: linear-gradient(140deg, hsl(354, 74%, 49%) 0% 20%, hsl(0, 0%, 100%) 20% 100%);
+    background: linear-gradient(150deg, transparent 0% 10%, hsl(0, 0%, 100%) 10% 100%);
     bottom: 0;
     right: 0;
-    cursor: pointer;
 }
 
-app-header .fa-bars,
-app-header .fa-xmark {
-    display: none;
-    cursor: pointer;
-}
-
-.navigation-bar li{
+.navigation-bar li {
     list-style: none;
     padding-block: 1rem;
     position: relative;
 }
 
-.navigation-bar li a, .dropdown {
+.navigation-bar .dropdown-icons {
+    top: 2px;
+    position: relative;
+    fill: red;
+    color: hsl(354, 74%, 49%);
+}
+
+.navigation-bar li a,
+.dropdown {
     text-decoration: none;
     list-style: none;
     text-transform: uppercase;
     font-weight: 500;
     letter-spacing: 1px;
     color: hsl(354, 74%, 49%);
+    cursor: pointer;
 }
 
-.navigation-bar li:hover::after {
+.navigation-bar li:not(.dropdown):hover::after {
     content: '';
     position: absolute;
     height: 2px;
@@ -93,10 +94,6 @@ app-header .fa-xmark {
     background: hsl(354, 74%, 49%);
     bottom: 10px;
     left: 0;
-}
-
-.navigation-bar li:hover:not(.dropdown) {
-    opacity: 0.8;
 }
 
 .dropdown-content {
@@ -291,11 +288,11 @@ app-header .navigation-bar .dropdown-content a {
 
     app-header .dept-name span:first-child {
         display: block;
-    }  
+    }
 
     app-header .dept-name span:last-child {
         display: none;
-    }    
+    }
 
     app-header .logo {
         background-color: hsl(0, 0%, 100%);
@@ -335,16 +332,17 @@ app-header .navigation-bar .dropdown-content a {
         color: hsl(0, 0%, 100%);
     }
 
-    
+
     .container {
         margin: 0;
         padding: 2rem;
         grid-template-columns: 1fr;
     }
-    
+
     .container .vision-and-mission {
         padding: 1rem;
     }
+
     .container .right-content {
         padding: 0;
     }

@@ -3,6 +3,11 @@
     box-sizing: border-box;
 }
 
+body {
+    min-width: 100vw;
+    min-height: 100vh;
+}
+
 table,
 tr,
 td,
@@ -27,7 +32,8 @@ table {
     margin-bottom: 2rem;
 }
 
-.download-button, .next-page {
+.download-button,
+.next-page {
     text-decoration: none;
     cursor: pointer;
     color: limegreen;
@@ -95,19 +101,69 @@ table {
     margin-bottom: 1rem;
 }
 
+.error {
+    color: red;
+    font-size: 15px;
+}
+
+.pop-up {
+    visibility: hidden;
+    position: absolute;
+    inset: 0px;
+    background: rgba(0, 0, 0, 0.50);
+    display: grid;
+    place-items: center;
+}
+
+.pop-up.reveal {
+    visibility: visible;
+}
+
+.pop-up .video-container {
+    background-color:hsl(354, 74%, 49%);
+    padding: 1rem 0.5rem 0.5rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.pop-up .video-container .close-icon {
+    margin-inline: auto 0.5rem;
+    position: relative;
+    cursor: pointer;
+}
+
+.pop-up .video-container video {
+    border-radius: 10px;
+}
+
 @keyframes blink {
     0% {
         opacity: 1;
     }
-    25% {
-        opacity: 0;
+
+    15% {
+        opacity: 0.2;
     }
-    50% {
+
+    30% {
         opacity: 1;
     }
-    75% {
-        opacity: 0;
+
+    50% {
+        opacity: 0.2;
     }
+
+    70% {
+        opacity: 1;
+    }
+
+    85% {
+        opacity: 0.2;
+    }
+
     100% {
         opacity: 1;
     }
