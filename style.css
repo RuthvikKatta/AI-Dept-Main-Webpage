@@ -24,7 +24,7 @@ app-header {
 
 app-header .logo {
     background-color: hsl(0, 0%, 100%);
-    background-image: url(./assets/VJIT_logo_2023.png);
+    background-image: url(./assets/Images/VJIT_logo_2023.png);
     background-repeat: no-repeat;
     background-size: contain;
     width: 200px;
@@ -136,7 +136,7 @@ app-header .navigation-bar .dropdown-content a {
     padding-inline: 3rem;
 }
 
-.container .vision-and-mission {
+.vision-mission {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -147,7 +147,7 @@ app-header .navigation-bar .dropdown-content a {
     text-align: justify;
 }
 
-.vision-and-mission h1 {
+.vision-mission h1 {
     color: hsl(354, 74%, 49%);
 }
 
@@ -254,6 +254,18 @@ app-header .navigation-bar .dropdown-content a {
     font-weight: 700;
 }
 
+.Notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.Notification .coming-soon {
+    color: hsl(354, 74%, 49%);
+    font-weight: 600;
+}
+
 @-webkit-keyframes fade {
     from {
         opacity: .4
@@ -296,7 +308,7 @@ app-header .navigation-bar .dropdown-content a {
 
     app-header .logo {
         background-color: hsl(0, 0%, 100%);
-        background-image: url(./assets/VJIT_logo_2023_mobile.png);
+        background-image: url(./assets/Images/VJIT_logo_2023_mobile.png);
         background-repeat: no-repeat;
         background-size: contain;
         border-radius: 100%;
@@ -339,7 +351,7 @@ app-header .navigation-bar .dropdown-content a {
         grid-template-columns: 1fr;
     }
 
-    .container .vision-and-mission {
+    .vision-mission {
         padding: 1rem;
     }
 

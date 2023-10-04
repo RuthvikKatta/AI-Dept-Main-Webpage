@@ -58,7 +58,7 @@
                 echo '<p><a class="download-button play-video">Play Video</a></p>';
                 echo '<div class="pop-up">
                         <div class="video-container">
-                            <img class="close-icon" src="/AI-Main-Page/assets/x-solid.svg" width=20 alt="close logo">
+                            <img class="close-icon" src="/AI-Main-Page/assets/Icons/x-solid.svg" width=20 alt="close logo">
                             <video width="600" controls>
                                 <source src = '. $videoFile .' type="video/mp4">
                                 <source src = '. $videoFile .' type="video/ogg">

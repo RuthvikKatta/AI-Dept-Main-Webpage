@@ -62,9 +62,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects Page</title>
+
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="./projects_style.css">
-    <title>Projects Main Page</title>
+    <link rel="shortcut icon" href="../assets/favicon-icon.png" type="image/x-icon">
+
     <script src="../Elements.js" defer></script>
 </head>
 <body>
@@ -139,7 +142,13 @@
             </tbody>
         </table>
     </div>
+    
+<?php
+// Close the database connection when done
+mysqli_close($conn);
+?>
 
+</body>
     <script>
         if (performance.navigation.type === 1) {
             var table = document.getElementById('data-table');
@@ -148,10 +157,4 @@
             }
         }
     </script>
-</body>
 </html>
-
-<?php
-// Close the database connection when done
-mysqli_close($conn);
-?>
