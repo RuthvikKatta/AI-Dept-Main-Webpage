@@ -178,15 +178,22 @@ app-header .navigation-bar .dropdown-content a {
 }
 
 .carousal-container .carousal {
-    display: grid;
+    display: flex;
+    align-items: center;
 }
 
-.carousal-container .carousal-controller {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    gap: 5px;
-    top: -2.75rem;
+.carousal-container .carousal .carousal-controller {
+    position: absolute;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.carousal .move-right {
+    right: 1rem;
+}
+
+.carousal .move-left {
+    left: 1rem;
 }
 
 /* The dots/bullets/indicators */
