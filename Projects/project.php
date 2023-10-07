@@ -40,6 +40,7 @@
             // Check if files exist before generating download links
             $documentationFile = "../MasterData/$project_id/Documentation.pdf";
             $presentationFile = "../MasterData/$project_id/Presentation.pptx";
+            $codeZipFile = "../MasterData/$project_id/code.zip";
             $videoFile = "../MasterData/$project_id/Video.mp4";
 
             if (file_exists($documentationFile)) {
@@ -52,6 +53,12 @@
                 echo '<p><a class="download-button" href="' . $presentationFile . '" download>Download Presentation</a></p>';
             } else {
                 echo "<p class='error'>Presentation not available for this project.</p>";
+            }
+
+            if (file_exists($codeZipFile)) {
+                echo '<p><a class="download-button" href="' . $codeZipFile . '" download>Download Code</a></p>';
+            } else {
+                echo "<p class='error'>Code not available for this project.</p>";
             }
             
             if (file_exists($videoFile)) {
