@@ -5,14 +5,15 @@ var slideIndex = 0;
 function showAdjacentSlides(isLeft) {
     slideIndex = isLeft ? slideIndex - 1 : slideIndex + 1;
 
-    if (slideIndex > slides.length) { 
-        slideIndex = 1 
-    } else if (slideIndex < 0) { 
-        slideIndex = slides.length - 1;
-    }
-
     for (var i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
+    }
+
+
+    if (slideIndex >= slides.length) { 
+        slideIndex = 0 
+    } else if (slideIndex < 0) { 
+        slideIndex = slides.length - 1;
     }
 
     slides[slideIndex].style.display = "block";

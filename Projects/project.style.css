@@ -4,7 +4,6 @@
 }
 
 body {
-    min-width: 100vw;
     min-height: 100vh;
 }
 
@@ -62,9 +61,7 @@ form {
     display: flex;
     flex-direction: column;
     width: 20rem;
-    margin: auto;
     gap: 5px;
-    margin-top: 2rem;
     padding: 2rem;
     border: 2px solid hsl(354, 74%, 49%);
     border-radius: 10px;
@@ -137,6 +134,10 @@ table {
 
 .pop-up .video-container video {
     border-radius: 10px;
+}
+
+.container {
+    place-items: center;
 }
 
 @keyframes blink {

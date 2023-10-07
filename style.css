@@ -136,7 +136,7 @@ app-header .navigation-bar .dropdown-content a {
     padding-inline: 3rem;
 }
 
-.vision-mission {
+vision-mission {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -147,7 +147,7 @@ app-header .navigation-bar .dropdown-content a {
     text-align: justify;
 }
 
-.vision-mission h1 {
+vision-mission h1 {
     color: hsl(354, 74%, 49%);
 }
 
@@ -358,7 +358,7 @@ app-header .navigation-bar .dropdown-content a {
         grid-template-columns: 1fr;
     }
 
-    .vision-mission {
+    vision-mission {
         padding: 1rem;
     }
 

@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Project Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Page</title>
+
+    <link rel="stylesheet" href="./project.style.css">
     <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="./projects_style.css">
+    <link rel="shortcut icon" href="../assets/favicon-icon.png" type="image/x-icon">
+
+    <script src="../Elements.js" defer></script>
 </head>
 <body>
     <app-header></app-header>
@@ -83,10 +89,9 @@
         mysqli_close($conn);
         ?>
 
-        <p><a data-back="true" href="./">Back to Search</a></p>
+        <p style="margin-top: 2rem"><a data-back="true" href="./">Back to Search</a></p>
     </div>
 </body>
-<script src="../Elements.js"></script>
 <script>
     const closeIcon = document.querySelector('.close-icon');
     const popUp = document.querySelector('.pop-up');
