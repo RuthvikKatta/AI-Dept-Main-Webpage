@@ -1,3 +1,12 @@
+<?php 
+    include '../Database/database_connection.php';
+
+    $project_id = $_GET['id'];
+
+    $query = "SELECT * FROM $tablename WHERE project_id = '$project_id'";
+    $result = $conn -> query($query);
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,33 +18,12 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="shortcut icon" href="../assets/favicon-icon.png" type="image/x-icon">
 
-    <script src="../Elements.js" defer></script>
+    <script src="../CustomElements/AppHeaderElement.js" defer></script>
 </head>
 <body>
     <app-header></app-header>
     <div class="project-details">
         <?php
-        // Read the project ID from the URL
-        $project_id = $_GET['id'];
-
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $dbname = "college_website_test_db";
-        $tablename = "projects_test_table";
-
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        if ($conn->connect_error) {
-            die("Connection failed: " . $conn->connect_error);
-        }
-
-        $query = "SELECT * FROM $tablename WHERE project_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $project_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             echo "<h1> " . $row['project_title'] . "</h1>";
@@ -46,7 +34,7 @@
             // Check if files exist before generating download links
             $documentationFile = "../MasterData/$project_id/Documentation.pdf";
             $presentationFile = "../MasterData/$project_id/Presentation.pptx";
-            $codeZipFile = "../MasterData/$project_id/code.zip";
+            $codeZipFile = "../MasterData/$project_id/Code.zip";
             $videoFile = "../MasterData/$project_id/Video.mp4";
 
             if (file_exists($documentationFile)) {

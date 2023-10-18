@@ -182,10 +182,19 @@ vision-mission h1 {
     align-items: center;
 }
 
-.carousal-container .carousal .carousal-controller {
+.carousal .carousal-controller {
     position: absolute;
     cursor: pointer;
     z-index: 10;
+    transition: scale 250ms ease-in-out;
+}
+
+.carousal .carousal-controller:hover {
+    scale: 1.2;
+}
+
+.carousal .carousal-controller:active {
+    scale: 0.9;
 }
 
 .carousal .move-right {
@@ -196,23 +205,6 @@ vision-mission h1 {
     left: 1rem;
 }
 
-/* The dots/bullets/indicators */
-.dot {
-    height: 5px;
-    width: 20px;
-    margin: 0 2px;
-    background-color: hsl(0, 0%, 100%);
-    border-radius: 5px;
-    display: inline-block;
-    transition: background-color 0.6s ease;
-    cursor: pointer;
-}
-
-.dot.current {
-    background-color: hsl(354, 74%, 49%);
-}
-
-/* Fading animation */
 .fade {
     -webkit-animation-name: fade;
     -webkit-animation-duration: 1.5s;

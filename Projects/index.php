@@ -1,59 +1,48 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "college_website_test_db";
-$tablename = "projects_test_table";
+    include '../Database/database_connection.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+    $years = $domainNames = array();
+    $selectedYear = $selectedDomain = $selectedType = "";
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    if (isset($_POST['search'])) {
+        $academicYear = $_POST["academic_year"];
+        $domain = $_POST["domain"];
+        $type = $_POST["type"];
 
-$years = $domainNames = array();
+        $query = "SELECT project_id, academic_year, project_title, project_domain, project_type
+                    FROM $tablename
+                    WHERE academic_year LIKE CONCAT('%', '$academicYear', '%')
+                    AND project_domain LIKE CONCAT('%', '$domain', '%')
+                    AND project_type LIKE CONCAT('%', '$type', '%')";
 
-$selectedYear = $selectedDomain = $selectedType = "";
+        $result = $conn->query($query);
+        $data = array();
 
-if (isset($_POST['search'])) {
-    $academicYear = $_POST["academic_year"];
-    $domain = $_POST["domain"];
-    $type = $_POST["type"];
-
-    $sql = "SELECT project_id, academic_year, project_title, project_domain, project_type
-                FROM $tablename
-                WHERE academic_year LIKE CONCAT('%', '$academicYear', '%')
-                AND project_domain LIKE CONCAT('%', '$domain', '%')
-                AND project_type LIKE CONCAT('%', '$type', '%')";
-
-    $result = $conn->query($sql);
-    $data = array();
-
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
         }
+
+        // Store selected values in variables to maintain form state
+        $selectedYear = $academicYear;
+        $selectedDomain = $domain;
+        $selectedType = $type;
     }
 
-    // Store selected values in variables to maintain form state
-    $selectedYear = $academicYear;
-    $selectedDomain = $domain;
-    $selectedType = $type;
-}
+    $distinct_years = "SELECT DISTINCT academic_year FROM $tablename";
+    $distinctYearResult = $conn->query($distinct_years);
 
-$distinct_years = "SELECT DISTINCT academic_year FROM $tablename";
-$distinctYearResult = $conn->query($distinct_years);
+    while ($row = $distinctYearResult->fetch_assoc()) {
+        $years[] = $row['academic_year'];
+    }
 
-while ($row = $distinctYearResult->fetch_assoc()) {
-    $years[] = $row['academic_year'];
-}
+    $distinct_domain_names = "SELECT DISTINCT project_domain FROM $tablename";
+    $distinctDomainResult = $conn->query($distinct_domain_names);
 
-$distinct_domain_names = "SELECT DISTINCT project_domain FROM $tablename";
-$distinctDomainResult = $conn->query($distinct_domain_names);
-
-while ($row = $distinctDomainResult->fetch_assoc()) {
-    $domainNames[] = $row['project_domain'];
-}
+    while ($row = $distinctDomainResult->fetch_assoc()) {
+        $domainNames[] = $row['project_domain'];
+    }
 ?>
 
 <!DOCTYPE html>
@@ -66,9 +55,10 @@ while ($row = $distinctDomainResult->fetch_assoc()) {
 
     <link rel="stylesheet" href="./project.style.css">
     <link rel="stylesheet" href="../style.css">
-    <link rel="shortcut icon" href="../assets/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/images/favicon-icon.png" type="image/x-icon">
 
-    <script src="../Elements.js" defer></script>
+    <script src="../CustomElements/AppHeaderElement.js" defer></script>
+    <script src="../CustomElements/VisionMissionElement.js" defer></script>
 </head>
 
 <body>
@@ -121,9 +111,9 @@ while ($row = $distinctDomainResult->fetch_assoc()) {
                             </tr>
                         </thead>';
                     if (!empty($data)) {
-                        $c = 0;
+                        $serialNumber = 0;
                         foreach ($data as $row) {
-                            $c++;
+                            $serialNumber++;
                             $pid = $row['project_id'];
                             $AcademicYear = $row['academic_year'];
                             $ProjectTitle = $row['project_title'];
@@ -131,7 +121,7 @@ while ($row = $distinctDomainResult->fetch_assoc()) {
                             $ProjectType = $row['project_type'];
 
                             echo '<tr>';
-                            echo '<td>' . $c . '</td>
+                            echo '<td>' . $serialNumber . '</td>
                                 <td>' . $AcademicYear . '</td>  
                                 <td>' . $ProjectTitle . '</td>
                                 <td>' . $Domain . '</td>
