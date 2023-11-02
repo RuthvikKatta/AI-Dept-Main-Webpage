@@ -162,6 +162,7 @@ vision-mission h1 {
 .right-content {
     display: flex;
     flex-direction: column;
+    gap: 2rem;
     padding: 0.5rem 2rem;
 }
 
@@ -263,6 +264,30 @@ vision-mission h1 {
 .Notification .coming-soon {
     color: hsl(354, 74%, 49%);
     font-weight: 600;
+}
+
+.cards-container {
+    padding:1rem 5rem;
+    width: 85%;
+    margin: auto;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+}
+
+.cards-container .card{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.cards-container .card .card-title{ 
+    color: hsl(354, 74%, 49%);
+}
+
+.cards-container .card .card-content{ 
+    text-align: justify;
 }
 
 @-webkit-keyframes fade {
