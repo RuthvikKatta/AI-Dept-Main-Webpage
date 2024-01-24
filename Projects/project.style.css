@@ -1,8 +1,3 @@
-* {
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;
-}
-
 body {
     min-height: 100vh;
 }
@@ -35,8 +30,9 @@ table {
 .next-page {
     text-decoration: none;
     cursor: pointer;
-    color: limegreen;
-    animation: blink 2s linear infinite;
+    color: blue;
+    font-size:medium;
+    /* animation: blink 2s linear infinite; */
 }
 
 .project-details {

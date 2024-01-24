@@ -1,6 +1,7 @@
 <?php
-    include '../Database/database_connection.php';
+    include '../Connection/Connection.php';
 
+    $tablename = 'projects_test';
     $years = $domainNames = array();
     $selectedYear = $selectedDomain = $selectedType = "";
 

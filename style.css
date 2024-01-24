@@ -34,14 +34,13 @@ app-header .logo {
 app-header .dept-name {
     letter-spacing: 2px;
     color: hsl(0, 0%, 100%);
-    font-weight: 700;
+    font-weight: 500;
     position: absolute;
     padding: 0.5rem 2rem;
     top: 0;
     right: 0;
     display: flex;
     gap: 5px;
-    text-transform: uppercase;
     align-items: center;
 }
 
@@ -176,6 +175,7 @@ vision-mission h1 {
 .carousal-container h1 {
     letter-spacing: 2px;
     color: hsl(354, 74%, 49%);
+    font-weight: 500;
 }
 
 .carousal-container .carousal {
@@ -288,6 +288,11 @@ vision-mission h1 {
 
 .cards-container .card .card-content{ 
     text-align: justify;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
 }
 
 @-webkit-keyframes fade {

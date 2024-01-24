@@ -10,8 +10,8 @@ class AppHeaderElement extends HTMLElement {
                 <li class="dropdown">Staff
                 <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
                 <div class="dropdown-content">
-                    <a href="/AI-Main-Page/Staff/">Teaching</a>
-                    <a href="/AI-Main-Page/Staff/">Non Teaching</a>
+                    <a href="/AI-Main-Page/Staff/staff.php?role=Teaching">Teaching</a>
+                    <a href="/AI-Main-Page/Staff/staff.php?role=Non Teaching">Non Teaching</a>
                 </div>
                 </li>
                 <li class="dropdown">Publications

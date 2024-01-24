@@ -1,0 +1,39 @@
+a {
+    color: hsl(354, 74%, 49%);
+}
+
+h1, 
+h2 {
+    font-weight: 500;
+    color: hsl(354, 74%, 49%);
+}
+
+.profiles-container {
+    margin: 2rem 4rem;
+    padding: 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    border: 2px solid hsl(354, 74%, 49%);
+    border-radius: 10px;
+}
+
+.staff-profiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5rem;
+}
+
+.profile {
+    width: 15rem;
+}
+
+.profile-image img {
+    width: 100%;
+    border-radius: 100%;
+}
+
+.title {
+    font-size: 35px;
+}

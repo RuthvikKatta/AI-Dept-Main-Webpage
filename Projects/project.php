@@ -1,7 +1,8 @@
 <?php 
-    include '../Database/database_connection.php';
+    include '../Connection/Connection.php';
 
     $project_id = $_GET['id'];
+    $tablename = "projects_test";
 
     $query = "SELECT * FROM $tablename WHERE project_id = '$project_id'";
     $result = $conn -> query($query);
@@ -28,14 +29,14 @@
             $row = $result->fetch_assoc();
             echo "<h1> " . $row['project_title'] . "</h1>";
             echo "<p> " . $row['academic_year'] . " - " . $row['project_type'] . " Project</p>";
-            echo "<p> " . $row['project_domain'] . "</p>";
+            echo "<p><strong>Domain:</strong> " . $row['project_domain'] . "</p>";
             echo "<p><strong>Developed By:</strong> " . $row['student_names'] . "</p>";
 
             // Check if files exist before generating download links
-            $documentationFile = "../MasterData/$project_id/Documentation.pdf";
-            $presentationFile = "../MasterData/$project_id/Presentation.pptx";
-            $codeZipFile = "../MasterData/$project_id/Code.zip";
-            $videoFile = "../MasterData/$project_id/Video.mp4";
+            $documentationFile = "../Database/Projects/$project_id/Documentation.pdf";
+            $presentationFile = "../Database/Projects/$project_id/Presentation.pptx";
+            $codeZipFile = "../Database/Projects/$project_id/Code.zip";
+            $videoFile = "../Database/Projects/$project_id/Video.mp4";
 
             if (file_exists($documentationFile)) {
                 echo '<p><a class="download-button" href="' . $documentationFile . '" download>Download Documentation</a></p>';
