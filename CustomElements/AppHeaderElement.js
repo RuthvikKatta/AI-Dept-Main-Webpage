@@ -1,3 +1,15 @@
+const appHeader = {
+    'logoLink': "./assets/Images/VJIT_logo_2023.png",
+    'deptName': "Department of Artificial Intelligence",
+    'navigationBar': {
+        'home': {
+            'title': 'Home',
+            'location': './index.html'
+        },
+
+    }
+}
+
 class AppHeaderElement extends HTMLElement {
 	constructor() {
 		super();
@@ -6,7 +18,7 @@ class AppHeaderElement extends HTMLElement {
             <div class="logo"></div>
             <h1 class="dept-name">Department of Artificial Intelligence</h1>
             <ul class="navigation-bar">
-                <li><a href="/AI-Main-Page/"> Home </a></li>
+                <li><a href="/AI-Main-Page/AI-Department/"> Home </a></li>
                 <li class="dropdown">Staff
                 <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
                 <div class="dropdown-content">
@@ -14,13 +26,7 @@ class AppHeaderElement extends HTMLElement {
                     <a href="/AI-Main-Page/Staff/staff.php?role=Non Teaching">Non Teaching</a>
                 </div>
                 </li>
-                <li class="dropdown">Publications
-                <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
-                <div class="dropdown-content">
-                    <a href="/AI-Main-Page/Publications/"> Faculty </a>
-                    <a href="/AI-Main-Page/Publications/"> Student </a>
-                </div>
-                </li>
+                <li><a href="/AI-Main-Page/Publications/"> Publication </a></li>
                 <li><a href="/AI-Main-Page/Projects/"> Projects </a></li>
                 <li><a href="/AI-Main-Page/Mentoring/"> Mentoring </a></li>
                 <li class="dropdown">Download Material

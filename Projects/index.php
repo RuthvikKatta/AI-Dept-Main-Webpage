@@ -1,49 +1,7 @@
 <?php
-    include '../Connection/Connection.php';
+include '../users/models/Project.php';
 
-    $tablename = 'projects_test';
-    $years = $domainNames = array();
-    $selectedYear = $selectedDomain = $selectedType = "";
-
-    if (isset($_POST['search'])) {
-        $academicYear = $_POST["academic_year"];
-        $domain = $_POST["domain"];
-        $type = $_POST["type"];
-
-        $query = "SELECT project_id, academic_year, project_title, project_domain, project_type
-                    FROM $tablename
-                    WHERE academic_year LIKE CONCAT('%', '$academicYear', '%')
-                    AND project_domain LIKE CONCAT('%', '$domain', '%')
-                    AND project_type LIKE CONCAT('%', '$type', '%')";
-
-        $result = $conn->query($query);
-        $data = array();
-
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
-            }
-        }
-
-        // Store selected values in variables to maintain form state
-        $selectedYear = $academicYear;
-        $selectedDomain = $domain;
-        $selectedType = $type;
-    }
-
-    $distinct_years = "SELECT DISTINCT academic_year FROM $tablename";
-    $distinctYearResult = $conn->query($distinct_years);
-
-    while ($row = $distinctYearResult->fetch_assoc()) {
-        $years[] = $row['academic_year'];
-    }
-
-    $distinct_domain_names = "SELECT DISTINCT project_domain FROM $tablename";
-    $distinctDomainResult = $conn->query($distinct_domain_names);
-
-    while ($row = $distinctDomainResult->fetch_assoc()) {
-        $domainNames[] = $row['project_domain'];
-    }
+$project = new Project();
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +14,7 @@
 
     <link rel="stylesheet" href="./project.style.css">
     <link rel="stylesheet" href="../style.css">
-    <link rel="shortcut icon" href="../assets/images/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/Images/favicon-icon.png" type="image/x-icon">
 
     <script src="../CustomElements/AppHeaderElement.js" defer></script>
     <script src="../CustomElements/VisionMissionElement.js" defer></script>
@@ -65,13 +23,21 @@
 <body>
     <app-header></app-header>
     <div class="container">
-        <vision-mission></vision-mission>
         <form id="search-form" method="POST">
             <h1 class="project-title">Project Search</h1>
             <label for="academic-year">Academic Year:</label>
             <select id="academic-year" name="academic_year">
                 <option value="">Select Year</option>
                 <?php
+                $selectedYear = isset($_POST['academic_year']) ? $_POST['academic_year'] : null;
+                $selectedDomain = isset($_POST['domain']) ? $_POST['domain'] : null;
+                $selectedType = isset($_POST['type']) ? $_POST['type'] : null;
+
+                $distinctOptions = $project->getDistinctOptions();
+
+                $years = $distinctOptions['years'];
+                $domains = $distinctOptions['domains'];
+
                 foreach ($years as $year) {
                     echo '<option value="' . $year . '" ' . ($selectedYear === $year ? 'selected' : '') . '>' . $year . '</option>';
                 }
@@ -81,7 +47,7 @@
             <select id="domain" name="domain">
                 <option value="">Select Domain</option>
                 <?php
-                foreach ($domainNames as $domain) {
+                foreach ($domains as $domain) {
                     echo '<option value="' . $domain . '" ' . ($selectedDomain === $domain ? 'selected' : '') . '>' . $domain . '</option>';
                 }
                 ?>
@@ -101,6 +67,12 @@
             <tbody>
                 <?php
                 if (isset($_POST['search'])) {
+
+                    $year = $_POST['academic_year'];
+                    $domain = $_POST['domain'];
+                    $type = $_POST['type'];
+
+                    $data = $project->getProjects($year, $domain, $type);
 
                     echo '<thead>
                             <tr>
@@ -137,11 +109,6 @@
             </tbody>
         </table>
     </div>
-
-    <?php
-    // Close the database connection when done
-    mysqli_close($conn);
-    ?>
 
 </body>
 <script>

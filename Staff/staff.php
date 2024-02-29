@@ -1,8 +1,8 @@
 <?php
 include '../Connection/Connection.php';
 
-$role = $_GET['role'];
-$tablename = 'staff_test';
+$role = isset($_GET['role']) ? $_GET['role'] : 'Teaching';
+$tablename = 'staff';
 
 $query = "SELECT * FROM $tablename where role = '$role' ORDER BY designation_id DESC";
 $result = $conn->query($query);
@@ -39,7 +39,7 @@ if ($result->num_rows > 0) {
         <div class="staff-profiles">
             <?php
             foreach ($data as $row) {
-                $designation_table = 'designation_test';
+                $designation_table = 'designation';
                 $designation_query = "SELECT title FROM $designation_table WHERE designation_id = ?";
 
                 $stmt = $conn->prepare($designation_query);

@@ -1,0 +1,494 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+:root {
+    --red: #d92033;
+    --white: #fff;
+    --grey: #f5f5f5;
+    --black1: #222;
+    --black2: #999;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.vertical-navigation {
+    position: absolute;
+    width: 300px;
+    height: 100%;
+    background: var(--red);
+    border-left: 10px solid var(--red);
+    overflow: hidden;
+}
+
+.navigation ul {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin-top: 7rem;
+}
+
+.navigation ul li {
+    position: relative;
+    width: 100%;
+    list-style: none;
+    margin-block: 10px;
+}
+
+.navigation ul li.active {
+    background: var(--white);
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.navigation ul li a {
+    position: relative;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: var(--white);
+    padding: 0px 20px;
+    height: 50px;
+    text-align: start;
+    align-items: center;
+    white-space: normal;
+}
+
+.navigation ul li.active a {
+    color: var(--red);
+}
+
+.navigation ul li.active a::before {
+    content: '';
+    position: absolute;
+    background: transparent;
+    right: 0;
+    top: -50px;
+    width: 50px;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    box-shadow: 35px 35px 0 10px var(--white);
+    pointer-events: none;
+}
+
+.navigation ul li.active a::after {
+    content: '';
+    position: absolute;
+    background: transparent;
+    right: 0;
+    bottom: -50px;
+    width: 50px;
+    border-radius: 50%;
+    aspect-ratio: 1;
+    box-shadow: 35px -35px 0 10px var(--white);
+    pointer-events: none;
+}
+
+main {
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    height: 100vh;
+    background: var(--white);
+    overflow-x: auto;
+}
+
+main>section {
+    min-height: 100vh;
+    display: none;
+}
+
+#profile .profile-container {
+    margin: auto;
+    padding: 2rem 4rem;
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+    gap: 1.5rem;
+}
+
+#profile .profile-name {
+    color: hsl(354, 74%, 49%);
+}
+
+#profile .profile-image img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+#profile .title {
+    font-size: 35px;
+}
+
+/* Marks sections styles */
+
+#marks.active {
+    display: grid;
+    padding: 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.9fr;
+    gap: 2rem;
+}
+
+#marks>a {
+    width: fit-content;
+    height: fit-content;
+    text-decoration: none;
+    border: 1px solid var(--red);
+    outline: none;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    color: var(--red);
+    background: var(--white);
+    margin-inline: auto;
+}
+
+.view-marks form {
+    width: fit-content;
+    margin-inline: auto;
+}
+
+/* Attendance sections styles */
+
+#attendance.active {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+}
+
+#attendance>a {
+    text-decoration: none;
+    border: 1px solid var(--red);
+    outline: none;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    color: var(--red);
+    background: var(--white);
+}
+
+.upload-marks-form,
+.attendance-details {
+    margin: 1rem auto;
+    width: 40vw;
+}
+
+.upload-marks-form form,
+.view-marks form,
+.attendance-details form {
+    display: grid;
+    grid-template-columns: 1.7fr 0.2fr;
+    gap: 1rem;
+    padding: 1rem;
+    border: 2px solid var(--red);
+    border-radius: 10px;
+}
+
+#marks form input[type="number"] {
+    text-align: center;
+}
+
+#marks form input[type="submit"],
+#attendance form input[type="submit"] {
+    grid-column: -1 / 1;
+    width: min-content;
+    margin-inline: auto;
+}
+
+#marks .student-form form,
+#attendance .students-form form {
+    padding: 2rem;
+    width: 50vw;
+    display: grid;
+    grid-template-columns: 1.8fr 0.2fr;
+    gap: 0.2rem;
+    margin: 2rem auto;
+    border: 2px solid var(--red);
+}
+
+#marks .view-marks {
+    grid-column: -1 / 1;
+}
+
+.students-form form div {
+    display: flex;
+    justify-content: space-around;
+    grid-column: -1 / 1;
+    margin-top: 1rem;
+}
+
+/* Mentoring sections styles */
+
+#mentoring.active {
+    display: grid;
+    grid-template-columns: 1.5fr 0.5fr;
+    padding: 1rem;
+    gap: 1rem;
+    width: 100%;
+}
+
+#mentoring .mentee-details {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid var(--red);
+}
+
+#mentoring .mentee {
+    display: none;
+}
+
+#mentoring .mentee.active {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 5px;
+}
+
+#mentoring .comments-section,
+#mentoring .QnA-section {
+    display: none;
+}
+
+#mentoring .comments-section.active,
+#mentoring .QnA-section.active {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 5px;
+    flex-grow: 1;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--red);
+    border-top: 1px solid var(--red);
+}
+
+#mentoring .comment,
+#mentoring .QnA {
+    padding: 0.25rem;
+    border-bottom: 1px dashed var(--red);
+}
+
+#mentoring .add-question form {
+    display: grid;
+    grid-template-columns: 0.45fr 0.45fr 0.1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--red);
+}
+
+#mentoring .add-comment form {
+    display: grid;
+    grid-template-columns: 0.4fr 1.4fr 0.2fr;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--red);
+}
+
+#mentoring .mentees {
+    padding: 5rem 1rem;
+}
+
+#mentoring .mentees ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    list-style: none;
+}
+
+#mentoring .comment-qna-toggle ul{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    list-style: none;
+}
+
+#mentoring .mentee-item,
+#mentoring .comment-qna-toggle li {
+    padding: 10px;
+    color: var(--white);
+    width: fit-content;
+    letter-spacing: 2px;
+    color: var(--red);
+    background-color: var(--white);
+    border: 1px solid var(--red);
+    cursor: pointer;
+    text-align: center;
+}
+
+#mentoring .mentee-item.active,
+#mentoring .comment-qna-toggle li.active {
+    color: var(--white);
+    background-color: var(--red);
+}
+
+#mentoring form input[type="text"] {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid var(--black1);
+    padding: 5px 10px;
+}
+
+form input[type="submit"],
+#mentoring .add-question button,
+#mentoring .add-comment button {
+    width: 100%;
+    padding: 10px 20px;
+    letter-spacing: 2px;
+    border: none;
+    outline: none;
+    background-color: var(--red);
+    color: var(--white);
+    cursor: pointer;
+}
+
+/* Leave sections Styles */
+
+#leave.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+}
+
+#leave .leave-apply {
+    width: 400px;
+    margin: 5rem auto 0;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+#leave form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    align-items: center;
+}
+
+#leave label {
+    margin-bottom: 2.5px;
+}
+
+#leave input[type="date"],
+#leave input[type="text"],
+#leave select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#leave textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    resize: none;
+    grid-column: -1 / 1;
+}
+
+#leave input[type="text"] {
+    border: none;
+    border-radius: 0px;
+    border-bottom: 1px solid #ccc;
+}
+
+#leave button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    grid-column: -1 / 1;
+}
+
+/* Logout section Styles */
+
+#logout.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#logout>a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background: var(--red);
+    color: var(--white);
+}
+
+main>section.active {
+    display: block;
+}
+
+.note {
+    color: gray;
+    font-size: x-small;
+    grid-column: -1 / 1;
+}
+
+/* table styles */
+
+table,
+tr,
+td,
+th {
+    border: 2px solid var(--red);
+    padding: 0;
+    margin: auto;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+th {
+    background-color: var(--red);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-right: 2px solid white;
+}
+
+th:last-child {
+    border-right: none;
+}
+
+table {
+    margin-bottom: 2rem;
+}
+
+h2 {
+    text-align: center;
+    color: var(--red);
+    margin-bottom: 1rem;
+}
+
+h4,
+h5 {
+    font-weight: normal;
+}
