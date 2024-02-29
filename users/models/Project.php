@@ -2,7 +2,7 @@
 class Project
 {
     private $dbh;
-    private $projectTableName = 'project';
+    private $projectTable = 'project';
 
     public function __construct()
     {
@@ -26,7 +26,7 @@ class Project
     public function getDistinctOptions()
     {
         $statement = $this->dbh->prepare(
-            "SELECT academic_year, project_domain FROM " . $this->projectTableName
+            "SELECT academic_year, domain FROM " . $this->projectTable
         );
 
         if (false === $statement) {
@@ -43,17 +43,17 @@ class Project
 
         return [
             'years' => array_unique(array_column($rows, 'academic_year')),
-            'domains' => array_unique(array_column($rows, 'project_domain'))
+            'domains' => array_unique(array_column($rows, 'domain'))
         ];
     }
     public function getProjects($academicYear, $domain, $type)
     {
         $statement = $this->dbh->prepare(
-            "SELECT project_id, academic_year, project_title, project_domain, project_type
-            FROM " . $this->projectTableName . "
+            "SELECT project_id, academic_year, title, domain, type
+            FROM " . $this->projectTable . "
             WHERE academic_year LIKE CONCAT('%', :academic_year, '%')
-            AND project_domain LIKE CONCAT('%', :project_domain, '%')
-            AND project_type LIKE CONCAT('%', :project_type, '%')"
+            AND domain LIKE CONCAT('%', :domain, '%')
+            AND type LIKE CONCAT('%', :type, '%')"
         );
 
         if (false === $statement) {
@@ -62,8 +62,8 @@ class Project
 
         $result = $statement->execute([
             ":academic_year" => $academicYear,
-            ":project_domain" => $domain,
-            ":project_type" => $type,
+            ":domain" => $domain,
+            ":type" => $type,
         ]);
 
         if (false === $result) {
@@ -77,7 +77,7 @@ class Project
     public function getProjectById($projectId)
     {
         $statement = $this->dbh->prepare(
-            "SELECT * FROM " . $this->projectTableName . " WHERE project_id = :project_id"
+            "SELECT * FROM " . $this->projectTable . " WHERE project_id = :project_id"
         );
 
         if (false === $statement) {
@@ -95,5 +95,30 @@ class Project
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         return $row;
+    }
+    public function addProject($projectData)
+    {
+        $statement = $this->dbh->prepare(
+            "INSERT INTO " . $this->projectTable . " (academic_year, title, domain, type, student_names, team_number, mentor_name) VALUES 
+                (:academic_year, :title, :domain, :type, :student_names, :team_number, :mentor_name)"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        if (
+            false === $statement->execute([
+                ":academic_year" => $projectData['academic_year'],
+                ":title" => $projectData['title'],
+                ":domain" => $projectData['domain'],
+                ":type" => $projectData['type'],
+                ":student_names" => $projectData['student_names'],
+                ":team_number" => $projectData['team_number'],
+                ":mentor_name" => $projectData['mentor_name'],
+            ])
+        ) {
+            throw new Exception(implode(' ', $statement->errorInfo()));
+        }
     }
 }

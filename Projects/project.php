@@ -27,10 +27,10 @@ $projectId = $_GET['id'];
         <?php
         $row = $project->getProjectById($projectId);
 
-        if (count($row) > 0) {
-            echo "<h1> " . $row['project_title'] . "</h1>";
-            echo "<p> " . $row['academic_year'] . " - " . $row['project_type'] . " Project</p>";
-            echo "<p><strong>Domain:</strong> " . $row['project_domain'] . "</p>";
+        if (is_array($row) && count($row) > 0) {
+            echo "<h1 class='project-title'> " . $row['title'] . "</h1>";
+            echo "<p> " . $row['academic_year'] . " - " . $row['type'] . " Project</p>";
+            echo "<p><strong>Domain:</strong> " . $row['domain'] . "</p>";
             echo "<p><strong>Developed By:</strong> " . $row['student_names'] . "</p>";
 
             // Check if files exist before generating download links

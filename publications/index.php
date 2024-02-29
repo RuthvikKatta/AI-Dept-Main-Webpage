@@ -1,7 +1,7 @@
 <?php
-include '../users/models/Project.php';
+include '../users/models/Publication.php';
 
-$project = new Project();
+$publication = new Publication();
 ?>
 
 <!DOCTYPE html>
@@ -10,9 +10,9 @@ $project = new Project();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projects Page</title>
+    <title>Publications Page</title>
 
-    <link rel="stylesheet" href="./project.style.css">
+    <link rel="stylesheet" href="./publication.style.css">
     <link rel="stylesheet" href="../style.css">
     <link rel="shortcut icon" href="../assets/Images/favicon-icon.png" type="image/x-icon">
 
@@ -24,22 +24,22 @@ $project = new Project();
     <app-header></app-header>
     <div class="container">
         <form id="search-form" method="POST">
-            <h1 class="project-title">Project Search</h1>
-            <label for="academic-year">Academic Year:</label>
-            <select id="academic-year" name="academic_year">
+            <h1 class="publication-title">Publication Search</h1>
+            <label for="journal-name">Journal Name:</label>
+            <select id="journal-name" name="journal-name">
                 <option value="">Select Year</option>
                 <?php
-                $selectedYear = isset($_POST['academic_year']) ? $_POST['academic_year'] : null;
+                $selectedYear = isset($_POST['journal-name']) ? $_POST['journal-name'] : null;
                 $selectedDomain = isset($_POST['domain']) ? $_POST['domain'] : null;
                 $selectedType = isset($_POST['type']) ? $_POST['type'] : null;
 
-                $distinctOptions = $project->getDistinctOptions();
+                $distinctOptions = $publication->getDistinctOptions();
 
-                $years = $distinctOptions['years'];
+                $journalNames = $distinctOptions['journal_names'];
                 $domains = $distinctOptions['domains'];
 
-                foreach ($years as $year) {
-                    echo '<option value="' . $year . '" ' . ($selectedYear === $year ? 'selected' : '') . '>' . $year . '</option>';
+                foreach ($journalNames as $journalName) {
+                    echo '<option value="' . $journalName . '" ' . ($selectedYear === $journalName ? 'selected' : '') . '>' . $journalName . '</option>';
                 }
                 ?>
             </select>
@@ -52,11 +52,11 @@ $project = new Project();
                 }
                 ?>
             </select>
-            <label for="type">Project Type:</label>
+            <label for="type">Role Type:</label>
             <select id="type" name="type">
-                <option value="">Select Project Type</option>
-                <option value="Mini" <?php echo ($selectedType === 'Mini') ? 'selected' : ''; ?>>Mini Project</option>
-                <option value="Major" <?php echo ($selectedType === 'Major') ? 'selected' : ''; ?>>Major Project</option>
+                <option value="">Select Role Type</option>
+                <option value="Faculty" <?php echo ($selectedType === 'Faculty') ? 'selected' : ''; ?>>Faculty</option>
+                <option value="Student" <?php echo ($selectedType === 'Student') ? 'selected' : ''; ?>>Student</option>
             </select>
             <input type="submit" name="search" value="Search">
         </form>
@@ -68,17 +68,18 @@ $project = new Project();
                 <?php
                 if (isset($_POST['search'])) {
 
-                    $year = $_POST['academic_year'];
+                    $journalName = $_POST['journal-name'];
                     $domain = $_POST['domain'];
                     $type = $_POST['type'];
 
-                    $data = $project->getProjects($year, $domain, $type);
+                    $data = $publication->getPublications($domain, $journalName, $type);
 
                     echo '<thead>
                             <tr>
                                 <th>S.No</th>
-                                <th>Academic Year</th>
-                                <th>Project Title</th>
+                                <th>Title</th>
+                                <th>Journal Name</th>
+                                <th>Paper Id</th>
                                 <th>Domain</th>
                                 <th>Project Link</th>
                             </tr>
@@ -87,22 +88,19 @@ $project = new Project();
                         $serialNumber = 0;
                         foreach ($data as $row) {
                             $serialNumber++;
-                            $pid = $row['project_id'];
-                            $AcademicYear = $row['academic_year'];
-                            $ProjectTitle = $row['title'];
-                            $Domain = $row['domain'];
-                            $ProjectType = $row['type'];
+                            $pid = $row['publication_id'];
 
                             echo '<tr>';
                             echo '<td>' . $serialNumber . '</td>
-                                <td>' . $AcademicYear . '</td>  
-                                <td>' . $ProjectTitle . '</td>
-                                <td>' . $Domain . '</td>
-                                <td><a class="next-page" href="project.php?id=' . $pid . '">View Details</a></td>';
+                            <td>' . $row['title'] . '</td>
+                                <td>' . $row['journal_name'] . '</td>  
+                                <td>' . $row['paper_id'] . '</td>
+                                <td>' . $row['domain'] . '</td>
+                                <td><a class="next-page" href="publication.php?id=' . $pid . '">View Details</a></td>';
                             echo '</tr>';
                         }
                     } else {
-                        echo '<tr><td colspan="5" style="text-align:center;">No Data Found</td></tr>';
+                        echo '<tr><td colspan="6" style="text-align:center;">No Data Found</td></tr>';
                     }
                 }
                 ?>

@@ -2,7 +2,7 @@
 class Publication
 {
     private $dbh;
-    private $publicationTableName = 'publication';
+    private $publicationTable = 'publication';
 
     public function __construct()
     {
@@ -23,12 +23,11 @@ class Publication
             die($e->getMessage());
         }
     }
-
-    // TODO: Create a publication table and Rename the projects table to the publications table
     public function getDistinctOptions()
     {
+
         $statement = $this->dbh->prepare(
-            "SELECT academic_year, project_domain FROM " . $this->projectTableName
+            "SELECT journal_name, domain FROM " . $this->publicationTable
         );
 
         if (false === $statement) {
@@ -44,18 +43,18 @@ class Publication
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return [
-            'years' => array_unique(array_column($rows, 'academic_year')),
-            'domains' => array_unique(array_column($rows, 'project_domain'))
+            'journal_names' => array_unique(array_column($rows, 'journal_name')),
+            'domains' => array_unique(array_column($rows, 'domain'))
         ];
     }
-    public function getProjects($academicYear, $domain, $type)
+    public function getPublications($domain, $journalName, $roleType)
     {
         $statement = $this->dbh->prepare(
-            "SELECT project_id, academic_year, project_title, project_domain, project_type
-            FROM " . $this->projectTableName . "
-            WHERE academic_year LIKE CONCAT('%', :academic_year, '%')
-            AND project_domain LIKE CONCAT('%', :project_domain, '%')
-            AND project_type LIKE CONCAT('%', :project_type, '%')"
+            "SELECT title, paper_id, journal_name, domain
+                FROM " . $this->publicationTable . "
+            WHERE domain LIKE CONCAT('%', :domain, '%')
+                AND journal_name LIKE CONCAT('%', :journal_name, '%')
+                AND role_type LIKE CONCAT('%', :role_type, '%')"
         );
 
         if (false === $statement) {
@@ -63,9 +62,9 @@ class Publication
         }
 
         $result = $statement->execute([
-            ":academic_year" => $academicYear,
-            ":project_domain" => $domain,
-            ":project_type" => $type,
+            ":domain" => $domain,
+            ":journal_name" => $journalName,
+            ":role_type" => $roleType,
         ]);
 
         if (false === $result) {
@@ -76,10 +75,10 @@ class Publication
 
         return $rows;
     }
-    public function getProjectById($projectId)
+    public function getPublicationById($publicationId)
     {
         $statement = $this->dbh->prepare(
-            "SELECT * FROM " . $this->projectTableName . " WHERE project_id = :project_id"
+            "SELECT * FROM " . $this->publicationTable . " WHERE publication_id = :publication_id"
         );
 
         if (false === $statement) {
@@ -87,7 +86,7 @@ class Publication
         }
 
         $result = $statement->execute([
-            'project_id' => $projectId
+            'publication_id' => $publicationId
         ]);
 
         if (false === $result) {
@@ -97,5 +96,30 @@ class Publication
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         return $row;
+    }
+    public function addPublication($publicationData)
+    {
+        $statement = $this->dbh->prepare(
+            "INSERT INTO " . $this->publicationTable . " (title, paper_id, journal_name, domain, abstract, authors, roleType) VALUES 
+                (:title, :paper_id, :journal_name, :domain, :abstract, :authors, :roleType)"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        if (
+            false === $statement->execute([
+                ":title" => $publicationData['title'],
+                ":paper_id" => $publicationData['paper_id'],
+                ":journal_name" => $publicationData['journal_name'],
+                ":domain" => $publicationData['domain'],
+                ":abstract" => $publicationData['abstract'],
+                ":authors" => $publicationData['authors'],
+                ":roleType" => $publicationData['roleType']
+            ])
+        ) {
+            throw new Exception(implode(' ', $statement->errorInfo()));
+        }
     }
 }

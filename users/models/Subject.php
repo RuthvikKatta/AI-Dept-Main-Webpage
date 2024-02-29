@@ -90,7 +90,7 @@ class Subject
             "SELECT st.subject_id, st.subject_name FROM " . $this->classHasSubjectsTable . " 
             chs LEFT JOIN " . $this->classTable . " c on chs.class_id = c.class_id 
             LEFT JOIN ". $this->subjectTable ." st ON chs.subject_id = st.subject_id
-            WHERE c.year = :year AND c.semester = :semester AND c.section = :section"
+            WHERE c.year = :year AND c.current_semester = :semester AND c.section = :section"
         );
 
         if (false === $statement) {

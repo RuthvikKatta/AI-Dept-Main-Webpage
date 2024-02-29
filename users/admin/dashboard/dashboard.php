@@ -66,9 +66,9 @@ $attendance = new Attendance();
                 </tr>";
             }
             echo "</table>"
-                ?>
+            ?>
         </section>
-
+        
         <section id="logout">
             <h2>Are you sure want to Logout?</h2>
             <a href='../login/logout.php?logout=true' class='logout'>Logout</a>

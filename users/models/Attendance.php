@@ -183,17 +183,17 @@ class Attendance
     }
     public function getTotalClass(array $subjectIds)
     {
+        $placeholders = implode(', ', array_fill(0, count($subjectIds), '?'));
+
         $statement = $this->dbh->prepare(
-            "SELECT subject_id, COUNT(*) AS total_classes FROM " . $this->attendanceLogTable . "GROUP BY subject_id WHERE subject_id IN :subject_ids"
+            "SELECT subject_id, COUNT(*) AS total_classes FROM " . $this->attendanceLogTable . " WHERE subject_id IN ($placeholders) GROUP BY subject_id"
         );
 
         if (false === $statement) {
             return [];
         }
 
-        $result = $statement->execute([
-            'subject_ids' => $subjectIds
-        ]);
+        $result = $statement->execute($subjectIds);
 
         if (false === $result) {
             return [];
@@ -266,14 +266,12 @@ class Attendance
         $statement = $this->dbh->prepare("
         SELECT 
             student_id,
-            name,
             " . implode(',', array_map(function ($subjectId) {
             return "SUM(CASE WHEN subject_id = $subjectId THEN present ELSE 0 END) AS '$subjectId'";
         }, $subjectIds)) . "
         FROM
         (SELECT 
             stu.student_id,
-            stu.name,
             subject.subject_id,
             COALESCE(ab.absent, 0) AS absent,
             (total.total_classes - COALESCE(ab.absent, 0)) AS present

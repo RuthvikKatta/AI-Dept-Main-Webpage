@@ -147,27 +147,40 @@ class Marks
     {
         $subjectIdPlaceholders = implode(',', array_fill(0, count($subjectIds), '?'));
 
-        $query = "SELECT 
-                    subject_id, 
-                    MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'I' THEN marks_obtained END) AS `Mid I`,
-                    MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'I' THEN marks_obtained END) AS `Assignment I`,
-                    MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'II' THEN marks_obtained END) AS `Mid II`,
-                    MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'II' THEN marks_obtained END) AS `Assignment II`,
-                    MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'III' THEN marks_obtained END) AS `Mid III`,
-                    MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'III' THEN marks_obtained END) AS `Assignment III`
-                FROM marks
-                WHERE year = ? AND section = ? AND student_id = ? AND subject_id IN ($subjectIdPlaceholders)
-                GROUP BY subject_id";
-
-        $statement = $this->dbh->prepare($query);
+        $statement = $this->dbh->prepare(
+            "SELECT 
+                subq.subject_id,
+                MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'I' THEN marks_obtained END) AS 'Mid I',
+                MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'I' THEN marks_obtained END) AS 'Assignment I',
+                MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'II' THEN marks_obtained END) AS 'Mid II',
+                MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'II' THEN marks_obtained END) AS 'Assignment II',
+                MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'III' THEN marks_obtained END) AS 'Mid III',
+                MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'III' THEN marks_obtained END) AS 'Assignment III'
+            FROM
+                (SELECT subject_id, subject_name FROM subject WHERE subject_id IN ($subjectIdPlaceholders)) subq
+            JOIN
+                (SELECT * FROM student WHERE student_id = ?) sq ON 1 = 1 
+            LEFT JOIN
+                marks
+            ON
+                marks.student_id = sq.student_id AND marks.subject_id = subq.subject_id AND marks.year = ? AND marks.section = ?
+            GROUP BY
+                subq.subject_id"
+        );
 
         if (false === $statement) {
             return [];
         }
 
-        $bindValues = array_merge([$year, $section, $studentId], $subjectIds);
+        foreach ($subjectIds as $key => $subjectId) {
+            $statement->bindValue($key + 1, $subjectId, PDO::PARAM_INT);
+        }
+        
+        $statement->bindValue($key + 2, $studentId, PDO::PARAM_STR);
+        $statement->bindValue($key + 3, $year, PDO::PARAM_STR);
+        $statement->bindValue($key + 4, $section, PDO::PARAM_STR);
 
-        $result = $statement->execute($bindValues);
+        $result = $statement->execute();
 
         if (false === $result) {
             return [];
@@ -177,7 +190,6 @@ class Marks
 
         return $rows;
     }
-
     public function getBacklogsByStudentId($student_id)
     {
         $statement = $this->dbh->prepare(

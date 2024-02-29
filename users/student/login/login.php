@@ -18,9 +18,9 @@ if (isset($_POST['login'])) {
 
     switch ($status) {
         case 'SUCCESS':
-            $_SESSION['id'] = trim($username);
-            $_SESSION['role'] = 'faculty';
-            $_SESSION['timeout'] = time();
+            $_SESSION['studentId'] = trim($username);
+            $_SESSION['loggedIn'] = true;
+            $_SESSION['role'] = 'student';
             header("Location: ../dashboard/dashboard.php");
             exit();
 
