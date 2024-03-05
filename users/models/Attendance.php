@@ -6,6 +6,7 @@ class Attendance
     private $dbh;
     private $attendanceLogTable = 'attendance_log';
     private $absenteesLogTable = 'absentees_log';
+    private $subjectTable = 'subject';
     public function __construct()
     {
         $database = 'college_website_test_db';
@@ -181,12 +182,13 @@ class Attendance
             }
         }
     }
-    public function getTotalClass(array $subjectIds)
+    public function getTotalClasses(array $subjectIds): array
     {
         $placeholders = implode(', ', array_fill(0, count($subjectIds), '?'));
-
         $statement = $this->dbh->prepare(
-            "SELECT subject_id, COUNT(*) AS total_classes FROM " . $this->attendanceLogTable . " WHERE subject_id IN ($placeholders) GROUP BY subject_id"
+            "Select subq.subject_id, subq.name, COALESCE(atq.total_classes, 0) as total_classes from
+            (select subject_id, name from " . $this->subjectTable . " Where subject_id in ($placeholders)) subq
+            LEFT JOIN (SELECT subject_id, COUNT(*) AS total_classes FROM " . $this->attendanceLogTable . " GROUP BY subject_id) atq ON subq.subject_id = atq.subject_id;"
         );
 
         if (false === $statement) {
@@ -205,20 +207,21 @@ class Attendance
     }
     public function getCummulativeAttendance(array $subjectIds, $year, $section)
     {
-
         $subjectIdPlaceholders = implode(',', array_fill(0, count($subjectIds), '?'));
 
         $statement = $this->dbh->prepare("
         SELECT 
             student_id,
-            name,
+            CONCAT(last_name, ' ', first_name, ' ', middle_name) as name,
             " . implode(',', array_map(function ($subjectId) {
             return "SUM(CASE WHEN subject_id = $subjectId THEN present ELSE 0 END) AS '$subjectId'";
         }, $subjectIds)) . "
         FROM
         (SELECT 
             stu.student_id,
-            stu.name,
+            stu.first_name,
+            stu.middle_name,
+            stu.last_name,
             subject.subject_id,
             COALESCE(ab.absent, 0) AS absent,
             (total.total_classes - COALESCE(ab.absent, 0)) AS present
@@ -247,13 +250,14 @@ class Attendance
             throw new Exception('Invalid query statement');
         }
 
-
         foreach ($subjectIds as $key => $subjectId) {
             $statement->bindValue($key + 1, $subjectId, PDO::PARAM_INT);
         }
 
-        $statement->bindValue($key + 2, $year, PDO::PARAM_STR);
-        $statement->bindValue($key + 3, $section, PDO::PARAM_STR);
+        if (count($subjectIds) > 0) {
+            $statement->bindValue($key + 2, $year, PDO::PARAM_STR);
+            $statement->bindValue($key + 3, $section, PDO::PARAM_STR);
+        }
 
         $statement->execute();
 
@@ -304,7 +308,9 @@ class Attendance
             $statement->bindValue($key + 1, $subjectId, PDO::PARAM_INT);
         }
 
-        $statement->bindValue($key + 2, $studentId, PDO::PARAM_STR);
+        if (count($subjectIds) > 0) {
+            $statement->bindValue($key + 2, $studentId, PDO::PARAM_STR);
+        }
 
         $statement->execute();
 

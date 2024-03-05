@@ -50,7 +50,7 @@ class Publication
     public function getPublications($domain, $journalName, $roleType)
     {
         $statement = $this->dbh->prepare(
-            "SELECT title, paper_id, journal_name, domain
+            "SELECT publication_id, title, paper_id, journal_name, domain
                 FROM " . $this->publicationTable . "
             WHERE domain LIKE CONCAT('%', :domain, '%')
                 AND journal_name LIKE CONCAT('%', :journal_name, '%')
@@ -120,6 +120,39 @@ class Publication
             ])
         ) {
             throw new Exception(implode(' ', $statement->errorInfo()));
+        }
+    }
+    public function editPoublicationDetails($publicationId, $updatedDetails)
+    {
+        $statement = $this->dbh->prepare(
+            "UPDATE TABLE " . $this->publicationTable . "
+            SET title=:title,
+            paper_id=:paper_id,
+            journal_name=:journal_name,
+            domain=:domain,
+            abstract=:abstract,
+            authors=:authors,
+            role_type=:role_type
+            WHERE publication_id = :publication_id"
+        );
+
+        if (false === $statement) {
+            throw new Exception('Invalid prepare statement');
+        }
+
+        $result = $statement->execute([
+            ":title" => $updatedDetails["title"],
+            ":paper_id" => $updatedDetails["paper_id"],
+            ":journal_name" => $updatedDetails["journal_name"],
+            ":domain" => $updatedDetails["domain"],
+            ":abstract" => $updatedDetails["abstract"],
+            ":authors" => $updatedDetails["authors"],
+            ":role_type" => $updatedDetails["role_type"],
+            ':publication_id' => $publicationId
+        ]);
+
+        if ($result === false) {
+            throw new Exception('Error executing the update statement: ');
         }
     }
 }

@@ -33,29 +33,42 @@ $projectId = $_GET['id'];
             echo "<p><strong>Domain:</strong> " . $row['domain'] . "</p>";
             echo "<p><strong>Developed By:</strong> " . $row['student_names'] . "</p>";
 
-            // Check if files exist before generating download links
-            $documentationFile = "../Database/Projects/$projectId/Documentation.pdf";
-            $presentationFile = "../Database/Projects/$projectId/Presentation.pptx";
-            $codeZipFile = "../Database/Projects/$projectId/Code.zip";
-            $videoFile = "../Database/Projects/$projectId/Video.mp4";
+            $fileExtensions = [
+                'Documentation' => 'pdf',
+                'Presentation' => ['ppt', 'pptx'],
+                'Code' => 'zip',
+            ];
 
-            if (file_exists($documentationFile)) {
-                echo '<p><a class="download-button" href="' . $documentationFile . '" download>Download Documentation</a></p>';
-            } else {
-                echo "<p class='error'>Documentation not available for this project.</p>";
+            foreach ($fileExtensions as $fileType => $extensions) {
+                $fileExists = false;
+                $fileLink = "#";
+        
+                if (is_array($extensions)) {
+                    foreach ($extensions as $extension) {
+                        $filePath = "../Database/Projects/{$projectId}/{$fileType}.{$extension}";
+
+                        if (file_exists($filePath)) {
+                            $fileExists = true;
+                            $fileLink = $filePath;
+                            break;
+                        }
+                    }
+                } else {
+                    $extension = $extensions;
+                    $filePath = "../Database/Projects/{$projectId}/{$fileType}.{$extension}";
+
+                    if (file_exists($filePath)) {
+                        $fileExists = true;
+                        $fileLink = $filePath;
+                    }
+                }
+
+                echo $fileExists
+                    ? "<p><a class='download-button' href='{$fileLink}' download>Download {$fileType}</a></p>"
+                    : "<p class='error'>{$fileType} not available for this project.</p>";
             }
 
-            if (file_exists($presentationFile)) {
-                echo '<p><a class="download-button" href="' . $presentationFile . '" download>Download Presentation</a></p>';
-            } else {
-                echo "<p class='error'>Presentation not available for this project.</p>";
-            }
-
-            if (file_exists($codeZipFile)) {
-                echo '<p><a class="download-button" href="' . $codeZipFile . '" download>Download Code</a></p>';
-            } else {
-                echo "<p class='error'>Code not available for this project.</p>";
-            }
+            $videoFile = "../Database/Projects/{$projectId}/Video.mp4";
 
             if (file_exists($videoFile)) {
                 echo '<p><a class="download-button play-video">Play Video</a></p>';

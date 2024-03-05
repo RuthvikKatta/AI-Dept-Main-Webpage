@@ -5,7 +5,7 @@ session_start();
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true) {
     $facultyId = $_SESSION['facultyId'];
 } else {
-    header("Location: ../login/login.php");
+    header("Location: ../../login.php");
 }
 
 include '../../models/Student.php';
@@ -31,6 +31,7 @@ $subject = new Subject();
 
 <body>
     <section id="attendance">
+        <a href="./dashboard.php" class='btn-back'>Back to dashboard</a>
         <section class="attendance-details">
             <?php
             $teachingDetails = $subject->getTeachingDetails($facultyId);
@@ -79,7 +80,7 @@ $subject = new Subject();
                     <?php
                     if (is_array($subjects)) {
                         foreach ($subjects as $s) {
-                            echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['subject_name'] . '</option>';
+                            echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['name'] . '</option>';
                         }
                     }
                     ?>
@@ -106,7 +107,7 @@ $subject = new Subject();
                          </div>';
 
                     foreach ($students as $student) {
-                        echo '<label for=' . $student['student_id'] . '>' . $student['student_id'] . ' • ' . $student['name'] . '</label>';
+                        echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                         echo '<input type="checkbox" id="' . $student['student_id'] . '" name="students[]" value="' . $student['student_id'] . '" />';
                     }
                     echo '<input type="hidden" name="subjectId" value="' . $subjectId . '">';
@@ -130,7 +131,7 @@ $subject = new Subject();
                     echo '<form method="post" action="handle_attendance.php">';
                     foreach ($students as $student) {
                         $isChecked = in_array($student['student_id'], $absentStudents) ? '' : 'checked';
-                        echo '<label for="' . $student['student_id'] . '">' . $student['student_id'] . ' • ' . $student['name'] . '</label>';
+                        echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                         echo '<input type="checkbox" id="' . $student['student_id'] . '" name="students[]" value="' . $student['student_id'] . '" ' . $isChecked . ' />';
                     }
 
@@ -150,21 +151,22 @@ $subject = new Subject();
 
 <script>
     const studentsForm = document.getElementById('take-attendance');
-    const editButtons = studentsForm.querySelectorAll('input[type="radio"]');
 
-    editButtons.forEach((button) => {
+    if (studentsForm) {
+        const editButtons = studentsForm.querySelectorAll('input[type="radio"]');
+        editButtons.forEach((button) => {
+            button.addEventListener("change", function (event) {
+                var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                var selectedOption = document.querySelector('input[name="attendanceOption"]:checked');
 
-        button.addEventListener("change", function (event) {
-            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            var selectedOption = document.querySelector('input[name="attendanceOption"]:checked');
-
-            if (selectedOption && checkboxes) {
-                checkboxes.forEach(function (checkbox) {
-                    checkbox.checked = (selectedOption.value === "markAbsentees");
-                });
-            }
-        });
-    })
+                if (selectedOption && checkboxes) {
+                    checkboxes.forEach(function (checkbox) {
+                        checkbox.checked = (selectedOption.value === "markAbsentees");
+                    });
+                }
+            });
+        })
+    }
 </script>
 
 </html>

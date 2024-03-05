@@ -25,7 +25,7 @@ body {
     align-items: center;
     justify-content: space-between;
     background-color: #f5f5f5;
-    padding: 20px 50px;
+    padding: 1.5rem 4rem;
     border-radius: 5px;
     width: 100vw;
 }
@@ -69,6 +69,12 @@ body {
     gap: 1rem;
 }
 
+.attendance,
+.marks,
+.backlogs-report {
+    padding: 1.5rem 4rem;
+}
+
 .logout {
     text-decoration: none;
     padding: 10px 20px;
@@ -103,5 +109,10 @@ th:last-child {
 }
 
 table {
-    margin-bottom: 2rem;
+    margin: 0;
+}
+
+h2 {
+    color: var(--red);
+    margin-bottom: 0.5rem;
 }

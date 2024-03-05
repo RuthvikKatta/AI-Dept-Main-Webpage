@@ -5,6 +5,15 @@ let sections = main.querySelectorAll('section');
 const url = window.location.href;
 const sectionIdMatch = url.match(/#(.+)$/);
 
+var sectionId = "";
+
+if (sectionIdMatch === null) {
+    window.location.href = "../dashboard/dashboard.php#view-attendance";
+    sectionId = sections[0].id;
+} else {
+    sectionId = sectionIdMatch[1];
+}
+
 let activeNavItem = sectionIdMatch ? document.querySelector(`a[href="#${sectionIdMatch[1]}"]`).parentElement : list[0];
 let activeSection = sectionIdMatch ? document.getElementById(sectionIdMatch[1]) : sections[0];
 
@@ -67,44 +76,23 @@ menteeItems.forEach(function (item, index) {
         item.classList.add('active');
         menteeDetails[index].classList.add('active');
 
-        // var activeMentee = document.querySelector('.mentee.active');
-
-        // var commentQnAToggle = activeMentee.querySelector('.comment-qna-toggle');
-        // var commentsSection = activeMentee.querySelector('.comments-section');
-        // var qnaSection = activeMentee.querySelector('.QnA-section');
-
-        // var lis = commentQnAToggle.querySelectorAll('li');
-
-        // lis.forEach(function (item, index) {
-        //     item.addEventListener('click', function () {
-        //         lis.forEach(function (li) {
-        //             li.classList.remove('active');
-        //         });
-
-        //         commentsSection.classList.remove('active');
-        //         qnaSection.classList.remove('active');
-
-        //         item.classList.add('active');
-        //         if (index == 0) {
-        //             commentsSection.classList.add('active');
-        //         } else {
-        //             qnaSection.classList.add('active');
-        //         }
-        //     })
-        // })
-
-        toggleQnA();
+        toggleSections();
     });
 });
 
-function toggleQnA() {
+function toggleSections() {
     var activeMentee = document.querySelector('.mentee.active');
 
-    var commentQnAToggle = activeMentee.querySelector('.comment-qna-toggle');
+    var toggleSection = activeMentee.querySelector('.toggle-sections');
     var commentsSection = activeMentee.querySelector('.comments-section');
     var qnaSection = activeMentee.querySelector('.QnA-section');
+    var attendanceSection = activeMentee.querySelector('.attendance');
+    var marksSection = activeMentee.querySelector('.marks');
+    var backlogsSection = activeMentee.querySelector('.backlogs-report');
 
-    var lis = commentQnAToggle.querySelectorAll('li');
+    sectionsArray = [commentsSection, qnaSection, attendanceSection, marksSection, backlogsSection];
+
+    var lis = toggleSection.querySelectorAll('li');
 
     lis.forEach(function (item, index) {
         item.addEventListener('click', function () {
@@ -112,17 +100,14 @@ function toggleQnA() {
                 li.classList.remove('active');
             });
 
-            commentsSection.classList.remove('active');
-            qnaSection.classList.remove('active');
+            sectionsArray.forEach(function (sec) {
+                sec.classList.remove('active');
+            });
 
             item.classList.add('active');
-            if (index == 0) {
-                commentsSection.classList.add('active');
-            } else {
-                qnaSection.classList.add('active');
-            }
+            sectionsArray[index].classList.add('active');
         })
     })
 }
 
-document.addEventListener('DOMContentLoaded', toggleQnA)
+document.addEventListener('DOMContentLoaded', toggleSections)

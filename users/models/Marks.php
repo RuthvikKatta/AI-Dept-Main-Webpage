@@ -27,7 +27,7 @@ class Marks
         }
     }
 
-    public function addMarkRecords(array $studentIds, $section, $year, $subject_id, $marks_type, $exam_session, $total_marks, array $marks_obtained)
+    public function addMarkRecords(array $studentIds, string $section, string $year, string $subject_id, string $marks_type, string $exam_session, string $total_marks, array $marks_obtained)
     {
         $statement = $this->dbh->prepare(
             'INSERT INTO ' . $this->marksTable . ' (student_id, section, year, subject_id, marks_type, exam_session, total_marks, marks_obtained) 
@@ -55,7 +55,7 @@ class Marks
             }
         }
     }
-    public function getMarks($section, $year, $subject_id, $marks_type, $exam_session)
+    public function getMarks(string $section, string $year, string $subject_id, string $marks_type, string $exam_session)
     {
         $statement = $this->dbh->prepare(
             'SELECT * FROM ' . $this->marksTable . '
@@ -91,8 +91,8 @@ class Marks
     {
         $statement = $this->dbh->prepare(
             'UPDATE ' . $this->marksTable . ' 
-        SET marks_obtained = :updatedMarks 
-        WHERE record_id = :record_id'
+            SET marks_obtained = :updatedMarks 
+            WHERE record_id = :record_id'
         );
 
         if (false === $statement) {
@@ -108,7 +108,7 @@ class Marks
             }
         }
     }
-    public function getOverallMarks($year, $section, $subjectId)
+    public function getOverallMarks(string $year, string $section, string $subjectId)
     {
         $statement = $this->dbh->prepare(
             "SELECT 
@@ -143,7 +143,7 @@ class Marks
 
         return $rows;
     }
-    public function getOverallMarksOfStudents($year, $section, $studentId, $subjectIds)
+    public function getOverallMarksOfStudents(string $year, string $section, string $studentId, array $subjectIds)
     {
         $subjectIdPlaceholders = implode(',', array_fill(0, count($subjectIds), '?'));
 
@@ -157,7 +157,7 @@ class Marks
                 MAX(CASE WHEN marks_type = 'MID' AND exam_session = 'III' THEN marks_obtained END) AS 'Mid III',
                 MAX(CASE WHEN marks_type = 'Assignment' AND exam_session = 'III' THEN marks_obtained END) AS 'Assignment III'
             FROM
-                (SELECT subject_id, subject_name FROM subject WHERE subject_id IN ($subjectIdPlaceholders)) subq
+                (SELECT subject_id, name FROM subject WHERE subject_id IN ($subjectIdPlaceholders)) subq
             JOIN
                 (SELECT * FROM student WHERE student_id = ?) sq ON 1 = 1 
             LEFT JOIN
@@ -175,7 +175,7 @@ class Marks
         foreach ($subjectIds as $key => $subjectId) {
             $statement->bindValue($key + 1, $subjectId, PDO::PARAM_INT);
         }
-        
+
         $statement->bindValue($key + 2, $studentId, PDO::PARAM_STR);
         $statement->bindValue($key + 3, $year, PDO::PARAM_STR);
         $statement->bindValue($key + 4, $section, PDO::PARAM_STR);
@@ -190,11 +190,11 @@ class Marks
 
         return $rows;
     }
-    public function getBacklogsByStudentId($student_id)
+    public function getBacklogsByStudentId(string $studentId, string $status)
     {
         $statement = $this->dbh->prepare(
-            "SELECT sb.subject_id, sb.subject_name FROM " . $this->backlogsTable . " bt
-            LEFT JOIN " . $this->subjectTable . " sb ON bt.subject_id = sb.subject_id WHERE bt.student_id = :student_id"
+            "SELECT sb.subject_id, sb.name,sb.year, sb.semester FROM " . $this->backlogsTable . " bt
+            LEFT JOIN " . $this->subjectTable . " sb ON bt.subject_id = sb.subject_id WHERE bt.student_id = :student_id AND bt.status = :status"
         );
 
         if (false === $statement) {
@@ -202,7 +202,8 @@ class Marks
         }
 
         $results = $statement->execute([
-            ':student_id' => $student_id
+            ':student_id' => $studentId,
+            ':status' => $status,
         ]);
 
         if (false === $results) {

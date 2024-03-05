@@ -5,7 +5,7 @@ session_start();
 if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true) {
     $facultyId = $_SESSION['facultyId'];
 } else {
-    header("Location: ../login/login.php");
+    header("Location: ../../login.php");
 }
 
 include '../../models/Student.php';
@@ -31,6 +31,7 @@ $marks = new Marks();
 
 <body>
     <section id="marks">
+    <a href="./dashboard.php" class='btn-back'>Back to dashboard</a>
         <section class="upload-marks-form">
             <?php
             $teachingDetails = $subject->getTeachingDetails($facultyId);
@@ -76,7 +77,7 @@ $marks = new Marks();
                     <?php
                     if (is_array($subjects)) {
                         foreach ($subjects as $s) {
-                            echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['subject_name'] . '</option>';
+                            echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['name'] . '</option>';
                         }
                     }
                     ?>
@@ -122,7 +123,7 @@ $marks = new Marks();
                     if (count($students) > 0) {
                         echo '<form method="post" action="handle_marks.php">';
                         foreach ($students as $student) {
-                            echo '<label for=' . $student['student_id'] . '>' . $student['student_id'] . ' • ' . $student['name'] . '</label>';
+                            echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                             echo '<input type="number" id="' . $student['student_id'] . '" name="students[]"/>';
                         }
 

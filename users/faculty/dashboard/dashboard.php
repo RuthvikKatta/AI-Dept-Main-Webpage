@@ -2,28 +2,58 @@
 
 session_start();
 
-if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn'] === true) {
+if (isset($_SESSION['loggedIn']) && isset($_SESSION['facultyId']) && $_SESSION['loggedIn'] === true) {
   $facultyId = $_SESSION['facultyId'];
 } else {
-  header("Location: ../login/login.php");
+  header("Location: ../../login.php");
 }
 
 include '../../models/Leave.php';
 include '../../models/Mentoring.php';
 include '../../models/Student.php';
-include '../../models/Faculty.php';
+include '../../models/Staff.php';
 include '../../models/Subject.php';
 include '../../models/Attendance.php';
 include '../../models/Marks.php';
+include '../../models/ClassDetails.php';
 
 $Leave = new Leave();
 $Mentoring = new Mentoring();
 $Student = new Student();
-$faculty = new Faculty();
+$staff = new Staff();
 $subject = new Subject();
 $attendance = new Attendance();
 $marks = new Marks();
+$classDetails = new ClassDetails();
 
+function validateMarks($str)
+{
+  return is_null($str) ? '-' : $str;
+}
+function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $assingment3)
+{
+  $values = [
+    is_null($mid1) ? null : $mid1 + $assingment1,
+    is_null($mid2) ? null : $mid2 + $assingment2,
+    is_null($mid3) ? null : $mid3 + $assingment3,
+  ];
+
+  $nonNullValues = array_filter($values, function ($value) {
+    return $value !== null;
+  });
+
+
+  switch (count($nonNullValues)) {
+    case 3:
+      return array_sum($nonNullValues) / 3;
+    case 2:
+      return array_sum($nonNullValues) / 2;
+    case 1:
+      return current($nonNullValues);
+    default:
+      return '-';
+  }
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,14 +85,14 @@ $marks = new Marks();
   <main>
     <section id="profile">
       <?php
-      $row = $faculty->getFacultyDetails($facultyId);
+      $row = $staff->getFacultyDetails($facultyId);
 
       $profile_image = $row['profile_image_link'] == '' ?
         '/AI-MAIN-PAGE/assets/Icons/' . ($row['gender'] == 'Male' ? 'Male.png' : 'Female.png') :
         '/AI-MAIN-PAGE/' . $row['profile_image_link'];
 
       $designation_id = $row['designation_id'];
-      $designation_result = $faculty->getDesignation($designation_id);
+      $designation_result = $staff->getDesignation($designation_id);
       $designation_title = $designation_result['title'];
       ?>
       <div class="profile-container">
@@ -133,7 +163,7 @@ $marks = new Marks();
             <?php
             if (is_array($subjects)) {
               foreach ($subjects as $s) {
-                echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['subject_name'] . '</option>';
+                echo '<option value="' . $s['subject_id'] . '" ' . ($selectedSubjectId == $s['subject_id'] ? 'selected' : '') . '>' . $s['name'] . '</option>';
               }
             }
             ?>
@@ -148,7 +178,7 @@ $marks = new Marks();
           $subjectName = $subject->getSubjectName($subjectId);
           $result = $marks->getOverallMarks($year, $section, $subjectId);
 
-          echo "<h2>Marks Record for $year - $section - $subjectName[subject_name]</h2>
+          echo "<h2>Marks Record for $year - $section - $subjectName[name]</h2>
               <table>
                 <tr>
                   <th>Student Id</th>
@@ -163,12 +193,12 @@ $marks = new Marks();
           if (count($result) > 0) {
             foreach ($result as $record) {
               echo "<tr><td>" . $record['student_id'] . "</td>
-                      <td>" . $record['Mid I'] . "</td>
-                      <td>" . $record['Assignment I'] . "</td>
-                      <td>" . $record['Mid II'] . "</td>
-                      <td>" . $record['Assignment II'] . "</td>
-                      <td>" . $record['Mid III'] . "</td>
-                      <td>" . $record['Assignment III'] . "</td>
+                      <td>" . validateMarks($record['Mid I']) . "</td>
+                      <td>" . validateMarks($record['Assignment I']) . "</td>
+                      <td>" . validateMarks($record['Mid II']) . "</td>
+                      <td>" . validateMarks($record['Assignment II']) . "</td>
+                      <td>" . validateMarks($record['Mid III']) . "</td>
+                      <td>" . validateMarks($record['Assignment III']) . "</td>
                       </tr>";
             }
           } else {
@@ -202,7 +232,7 @@ $marks = new Marks();
               echo '<tr> <td>' . $sno++ . '</td>';
               echo '<td>' . $record['class_year'] . '</td>';
               echo '<td>' . $record['class_section'] . '</td>';
-              echo '<td>' . $subjectName['subject_name'] . '</td>';
+              echo '<td>' . $subjectName['name'] . '</td>';
               echo '<td>' . $record['taken_on'] . '</td>';
               echo '<td><a href="./attendance_page.php?edit=true&attendanceId=' . $record['log_no'] . '">View Attendance</a></td> </tr>';
             }
@@ -226,14 +256,15 @@ $marks = new Marks();
             $activeClass = ($key === 0) ? 'active' : '';
 
             echo "<div class='mentee $activeClass'>";
-            echo "<h2><strong>" . $studentId . " - " . $studentDetails['name'] . "</strong></h2>";
+            echo "<h2><strong>" . $studentId . " - " . $studentDetails['last_name'] . " " . $studentDetails['first_name'] . " " . $studentDetails['middle_name'] . "</strong></h2>";
 
-            // TODO: Add attendance, marks and backlogs report
-
-            echo "<div class='comment-qna-toggle'>
+            echo "<div class='toggle-sections'>
                     <ul>
-                      <li class='active'>View Comments</li>
-                      <li>View QnA</li>
+                      <li class='active'>Comments</li>
+                      <li>QnA</li>
+                      <li>Attendance</li>
+                      <li>Mid Marks</li>
+                      <li>Backlog Record</li>
                     </ul>
                   </div>";
 
@@ -263,6 +294,106 @@ $marks = new Marks();
               echo "<h5>No previous QnA found</h5>";
             }
             echo "</div>";
+
+            echo "<div class='attendance'>";
+
+            $year = $studentDetails['year'];
+            $section = $studentDetails['section'];
+
+            $current_semester = $classDetails->getCurrentSemester($year, $section);
+            $subjects = $subject->getSubjects($year, $current_semester, $section);
+            $subjectIds = array_column($subjects, 'subject_id');
+
+            $rows = $attendance->getAttendanceByStudentId($subjectIds, $studentId);
+            $totalClasses = $attendance->getTotalClasses($subjectIds);
+
+            echo "<table><tr><th>Count</th>";
+            foreach ($subjects as $subjectDetails) {
+              echo "<th>" . $subjectDetails['name'] . "</th>";
+            }
+            echo "</tr><tr><td>Total Classes</td>";
+
+            foreach ($totalClasses as $subjectClass) {
+              echo "<td>" . $subjectClass['total_classes'] . "</td>";
+            }
+
+            $totalClassesCount = array_sum(array_column($totalClasses, 'total_classes'));
+            $totalPresentClasses = array_fill_keys($subjectIds, 0);
+
+            foreach ($rows as $row) {
+              echo "<tr><td>Present Classes</td>";
+              foreach ($subjectIds as $subjectId) {
+                echo "<td>" . $row[$subjectId] . "</td>";
+                $totalPresentClasses[$subjectId] += $row[$subjectId];
+              }
+              echo "</tr>";
+            }
+
+            echo "<tr><td>Percentage</td>";
+            foreach ($subjectIds as $subjectId) {
+              $percentage = ($totalPresentClasses[$subjectId] / $totalClassesCount) * 100;
+              echo "<td>" . round($percentage, 2) . "%</td>";
+            }
+            echo "</tr></table>";
+
+            echo "</div>
+              <div class='marks'>";
+            $rows = $marks->getOverallMarksOfStudents($year, $section, $studentId, $subjectIds);
+
+            echo "<table>
+                <tr>
+                  <th>Subject</th>
+                  <th>Mid I</th>
+                  <th>Assignment I</th>
+                  <th>Mid II</th>
+                  <th>Assignment II</th>
+                  <th>Mid III</th>
+                  <th>Assignment III</th>
+                  <th>Average</th>
+                </tr>";
+
+            if (count($rows) > 0) {
+              foreach ($rows as $record) {
+                $subjectName = $subject->getSubjectName($record['subject_id']);
+                echo "<tr><td>" . $subjectName['name'] . "</td>
+                      <td>" . validateMarks($record['Mid I']) . "</td>
+                      <td>" . validateMarks($record['Assignment I']) . "</td>
+                      <td>" . validateMarks($record['Mid II']) . "</td>
+                      <td>" . validateMarks($record['Assignment II']) . "</td>
+                      <td>" . validateMarks($record['Mid III']) . "</td>
+                      <td>" . validateMarks($record['Assignment III']) . "</td>
+                      <td>" . bestOfThreeAverage($record['Mid I'], $record['Assignment I'], $record['Mid II'], $record['Assignment II'], $record['Mid III'], $record['Assignment III']) . "</td>
+                      </tr>";
+              }
+            } else {
+              echo "<tr><td colspan='7'>No data Exists</td></tr>";
+            }
+            echo "</table>
+                    </div>
+                    <div class='backlogs-report'>";
+            $rows = $marks->getBacklogsByStudentId($studentId, 'Active');
+
+            echo "<table>
+                    <tr>
+                    <th>Sl No.</th>
+                    <th>Subject Name</th>
+                    <th>Subject Year</th>
+                    <th>Subject Semester</th>
+                    </tr>";
+
+            if (count($rows) > 0) {
+              foreach ($rows as $rec => $record) {
+                echo "<tr><td>" . $rec + 1 . "</td>
+                      <td>" . $record['name'] . "</td>
+                      <td>" . $record['year'] . "</td>
+                      <td>" . $record['semester'] . "</td>
+                      </tr>";
+              }
+            } else {
+              echo "<tr><td colspan='4'>No Active Backlogs</td></tr>";
+            }
+            echo "</table></div>";
+
             echo "<div class='add-question'>
               <form method='post' action='process_qa.php?mentor_id=$facultyId$&mentee_id=$studentId'>
                   <input type='text' name='question' id='question_$studentId' placeholder='Type your Question'>
@@ -362,7 +493,7 @@ $marks = new Marks();
 
     <section id="logout">
       <h2>Are you sure want to Logout?</h2>
-      <a href='../login/logout.php?logout=true' class='logout'>Logout</a>
+      <a href='../../logout.php?logout=true' class='logout'>Logout</a>
     </section>
   </main>
 </body>

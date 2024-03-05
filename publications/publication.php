@@ -33,13 +33,19 @@ $publicationId = $_GET['id'];
             echo "<p><strong>Journal Name:</strong> " . $row['journal_name'] . "</p>";
             echo "<p><strong>Paper Id:</strong> " . $row['paper_id'] . "</p>";
             echo "<p><strong>Written and Published By:</strong> " . $row['authors'] . "</p>";
-            echo "<p style='font-size:x-small'>Abstract: " . $row['abstract'] . "</p>";
+            echo "<p style='font-size:small'>Abstract: " . $row['abstract'] . "</p>";
 
-            $paperFile = "../Database/Publications/$publicationId/paper.pdf";
+            $paperFileTypes = ['pdf', 'doc', 'docx'];
+            foreach ($paperFileTypes as $fileType) {
+                $paperFile = "../Database/Publications/{$publicationId}/paper.{$fileType}";
 
-            if (file_exists($paperFile)) {
-                echo '<p><a class="download-button" href="' . $paperFile . '" download>Download Paper</a></p>';
-            } else {
+                if (file_exists($paperFile)) {
+                    echo "<p><a class='download-button' href='{$paperFile}' download>Download Paper</a></p>";
+                    break; 
+                }
+            }
+
+            if (!file_exists($paperFile)) {
                 echo "<p class='error'>Paper not available for this publication.</p>";
             }
 

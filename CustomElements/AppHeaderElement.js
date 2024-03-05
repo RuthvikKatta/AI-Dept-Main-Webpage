@@ -22,22 +22,21 @@ class AppHeaderElement extends HTMLElement {
                 <li class="dropdown">Staff
                 <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
                 <div class="dropdown-content">
-                    <a href="/AI-Main-Page/Staff/staff.php?role=Teaching">Teaching</a>
-                    <a href="/AI-Main-Page/Staff/staff.php?role=Non Teaching">Non Teaching</a>
+                    <a href="/AI-Main-Page/Staff/index.php?role=Teaching">Teaching</a>
+                    <a href="/AI-Main-Page/Staff/index.php?role=Non Teaching">Non Teaching</a>
                 </div>
                 </li>
                 <li><a href="/AI-Main-Page/Publications/"> Publication </a></li>
                 <li><a href="/AI-Main-Page/Projects/"> Projects </a></li>
-                <li><a href="/AI-Main-Page/Mentoring/"> Mentoring </a></li>
                 <li class="dropdown">Download Material
-                <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
-                <div class="dropdown-content">
-                <a href="/AI-Main-Page/Materials/"> Study Material </a>
-                <a href="/AI-Main-Page/Materials/"> Academic Calendars </a>
-                <a href="/AI-Main-Page/Materials/"> Previous Question paper </a>
-                    <a href="/AI-Main-Page/Materials/"> E-Books </a>
-                </div>
+                    <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">
+                    <div class="dropdown-content">
+                        <a href="/AI-Main-Page/Materials/index.php?type=AC"> Academic Calendars </a>
+                        <a href="/AI-Main-Page/Materials/index.php?type=SM"> Study Material </a>
+                        <a href="/AI-Main-Page/Materials/index.php?type=PQP"> Previous Question paper </a>
+                    </div>
                 </li>
+                <li><a href="../users/login.php">Login</a></li>
             </ul>`;
 	}
 

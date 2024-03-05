@@ -197,4 +197,53 @@ class Mentoring
 
         return ['question' => $questions, 'answer' => $answers];
     }
+    public function assignMentees($mentor_id, array $mentee_ids)
+    {
+        try {
+            $insertStatement = $this->dbh->prepare(
+                'INSERT INTO ' . $this->mentoringTable . ' (mentor_id, mentee_id) VALUES (:mentor_id, :mentee_id)'
+            );
+
+            if (false === $insertStatement) {
+                throw new Exception('Invalid prepare statement for insert');
+            }
+
+            foreach ($mentee_ids as $mentee_id) {
+                $insertResult = $insertStatement->execute([
+                    ':mentor_id' => $mentor_id,
+                    ':mentee_id' => $mentee_id,
+                ]);
+
+                if (false === $insertResult) {
+                    throw new Exception('Error inserting relationship: ' . $insertStatement->errorInfo()[2]);
+                }
+            }
+        } catch (Exception $e) {
+
+        }
+    }
+    public function removeMentees($mentor_id, $mentee_ids)
+    {
+        try {
+            $deleteStatement = $this->dbh->prepare(
+                'DELETE FROM ' . $this->mentoringTable . ' WHERE mentor_id = :mentor_id AND mentee_id = :mentee_id'
+            );
+
+            if (false === $deleteStatement) {
+                throw new Exception('Invalid prepare statement for delete');
+            }
+
+            foreach ($mentee_ids as $mentee_id) {
+                $deleteResult = $deleteStatement->execute([
+                    ':mentor_id' => $mentor_id,
+                    ':mentee_id' => $mentee_id,
+                ]);
+
+                if (false === $deleteResult) {
+                    throw new Exception('Error deleting relationship: ' . $deleteStatement->errorInfo()[2]);
+                }
+            }
+        } catch (Exception $e) {
+        }
+    }
 }

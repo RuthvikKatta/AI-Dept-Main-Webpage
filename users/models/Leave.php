@@ -3,7 +3,7 @@
 class Leave
 {
     private $dbh;
-    private $usersTableName = 'leave_record';
+    private $LeaveRecordTable = 'leave_record';
     public function __construct()
     {
         $database = 'college_website_test_db';
@@ -28,7 +28,7 @@ class Leave
     {
 
         $statement = $this->dbh->prepare(
-            'INSERT INTO ' . $this->usersTableName . ' (applied_by, applied_from, applied_to, total_days, reason, adjusted_withd_by) 
+            'INSERT INTO ' . $this->LeaveRecordTable . ' (applied_by, applied_from, applied_to, total_days, reason, adjusted_withd_by) 
                     VALUES (:applied_by, :applied_from, :applied_to, :total_days, :reason, :adjusted_with)'
         );
 
@@ -49,11 +49,10 @@ class Leave
             throw new Exception(implode(' ', $statement->errorInfo()));
         }
     }
-
     public function getPreviousRecords($facultyId)
     {
         $statement = $this->dbh->prepare(
-            'SELECT * FROM ' . $this->usersTableName . ' WHERE applied_by = :faculty_id'
+            'SELECT * FROM ' . $this->LeaveRecordTable . ' WHERE applied_by = :faculty_id'
         );
 
         if (false === $statement) {
@@ -69,5 +68,26 @@ class Leave
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $rows;
+    }
+    public function updateLeaveStatus($leaveId, $status)
+    {
+        $statement = $this->dbh->prepare(
+            "UPDATE TABLE " . $this->LeaveRecordTable . "
+            SET status = :status
+            WHERE leave_id = :leave_id"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        $result = $statement->execute([
+            ":status" => $status,
+            ":leave_id" => $leaveId,
+        ]);
+
+        if ($result === false) {
+            throw new Exception('Error executing the update statement: ');
+        }
     }
 }

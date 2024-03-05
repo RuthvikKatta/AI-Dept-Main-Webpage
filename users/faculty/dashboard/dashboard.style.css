@@ -230,7 +230,7 @@ main>section {
 
 #mentoring.active {
     display: grid;
-    grid-template-columns: 1.5fr 0.5fr;
+    grid-template-columns: 1.7fr 0.3fr;
     padding: 1rem;
     gap: 1rem;
     width: 100%;
@@ -256,8 +256,20 @@ main>section {
 }
 
 #mentoring .comments-section,
-#mentoring .QnA-section {
+#mentoring .QnA-section,
+#mentoring .attendance,
+#mentoring .marks,
+#mentoring .backlogs-report {
     display: none;
+}
+
+#mentoring .attendance.active,
+#mentoring .marks.active,
+#mentoring .backlogs-report.active {
+    display: block;
+    margin-bottom: auto;
+    overflow-x: auto;
+    padding-top: 1rem;
 }
 
 #mentoring .comments-section.active,
@@ -267,9 +279,7 @@ main>section {
     gap: 5px;
     padding: 5px;
     flex-grow: 1;
-    overflow-x: auto;
-    border-bottom: 1px solid var(--red);
-    border-top: 1px solid var(--red);
+    overflow-x: auto;   
 }
 
 #mentoring .comment,
@@ -285,6 +295,7 @@ main>section {
     padding: 0.5rem;
     overflow-x: auto;
     border-bottom: 1px solid var(--red);
+    border-top: 1px solid var(--red);
 }
 
 #mentoring .add-comment form {
@@ -309,16 +320,17 @@ main>section {
     list-style: none;
 }
 
-#mentoring .comment-qna-toggle ul{
+#mentoring .toggle-sections ul{
     display: flex;
     width: 100%;
     justify-content: space-around;
-    margin-bottom: 1rem;
     list-style: none;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--red);
 }
 
 #mentoring .mentee-item,
-#mentoring .comment-qna-toggle li {
+#mentoring .toggle-sections li {
     padding: 10px;
     color: var(--white);
     width: fit-content;
@@ -331,7 +343,7 @@ main>section {
 }
 
 #mentoring .mentee-item.active,
-#mentoring .comment-qna-toggle li.active {
+#mentoring .toggle-sections li.active {
     color: var(--white);
     background-color: var(--red);
 }
@@ -491,4 +503,15 @@ h2 {
 h4,
 h5 {
     font-weight: normal;
+}
+
+.btn-back {
+    display: block;
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 5px;
+    color: var(--white);
+    background-color: #4299e1;
+    margin: 1rem auto;
+    width: fit-content;
 }
