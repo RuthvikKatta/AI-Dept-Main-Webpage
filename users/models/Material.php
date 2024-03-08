@@ -6,19 +6,15 @@ class Material
     private $materialTable = 'material';
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }

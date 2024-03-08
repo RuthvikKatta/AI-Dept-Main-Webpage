@@ -94,6 +94,12 @@ table {
     margin-bottom: 1rem;
 }
 
+.abstract {
+    width: 60vw;
+    font-size: normalP;
+    text-align: justify;
+}
+
 .error {
     color: red;
     font-size: 15px;

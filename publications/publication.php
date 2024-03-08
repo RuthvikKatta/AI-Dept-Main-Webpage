@@ -29,18 +29,18 @@ $publicationId = $_GET['id'];
 
         if (is_array($row) && count($row) > 0) {
             echo "<h1 class='publication-title'> " . $row['title'] . "</h1>";
-            echo "<p>Domain: " . $row['domain'] . "</p>";
-            echo "<p><strong>Journal Name:</strong> " . $row['journal_name'] . "</p>";
+            echo "<p><strong>Domain:</strong>: " . $row['domain'] . "</p>";
+            echo "<p><strong>Journal:</strong> " . $row['journal_name'] . "</p>";
             echo "<p><strong>Paper Id:</strong> " . $row['paper_id'] . "</p>";
-            echo "<p><strong>Written and Published By:</strong> " . $row['authors'] . "</p>";
-            echo "<p style='font-size:small'>Abstract: " . $row['abstract'] . "</p>";
+            echo "<p><strong>Written By:</strong> " . $row['authors'] . "</p>";
+            echo "<p class='abstract'><strong>Abstract:</strong> " . $row['abstract'] . "</p>";
 
             $paperFileTypes = ['pdf', 'doc', 'docx'];
             foreach ($paperFileTypes as $fileType) {
-                $paperFile = "../Database/Publications/{$publicationId}/paper.{$fileType}";
+                $paperFile = "../Database/Publications/{$publicationId}/Paper.{$fileType}";
 
                 if (file_exists($paperFile)) {
-                    echo "<p><a class='download-button' href='{$paperFile}' download>Download Paper</a></p>";
+                    echo "<p><a target='_BLANK' class='download-button' href='{$paperFile}' download>Download Paper</a></p>";
                     break; 
                 }
             }

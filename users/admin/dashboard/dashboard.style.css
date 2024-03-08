@@ -191,6 +191,17 @@ input {
     padding: 5px 10px;
 }
 
+textarea {
+    grid-column: -1 / 1;
+    padding: 5px 10px;
+}
+
+select:disabled {
+    background-color: var(--white);
+    opacity: 1;
+    border-color: var(--black1);
+}
+
 .btn-add,
 .btn-back {
     display: block;
@@ -201,6 +212,7 @@ input {
     background-color: #4299e1;
     margin: 1rem auto;
     width: fit-content;
+    border: none;
 }
 
 .btn-add:hover {

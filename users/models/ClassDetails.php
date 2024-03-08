@@ -4,21 +4,18 @@ class ClassDetails
 {
     private $dbh;
     private $classTable = 'class';
+    private $classHasSubjectsTable = 'class_has_subjects';
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -46,10 +43,10 @@ class ClassDetails
 
         return $row['current_semester'];
     }
-    public function getClassDetails(string $year, string $section)
+    public function getClassDetails(string $classId)
     {
         $statement = $this->dbh->prepare(
-            "SELECT * FROM " . $this->classTable . " WHERE year=:year AND section=:section"
+            "SELECT * FROM " . $this->classTable . " WHERE class_id=:class_id"
         );
 
         if (false === $statement) {
@@ -57,8 +54,7 @@ class ClassDetails
         }
 
         $result = $statement->execute([
-            ":year" => $year,
-            ":section" => $section
+            ":class_id" => $classId
         ]);
 
         if (false === $result) {
@@ -85,14 +81,11 @@ class ClassDetails
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function updateClassDetails($classId, $updatedDetails)
+    public function updateClassDetails($classId, $currentSemester)
     {
         $statement = $this->dbh->prepare(
-            "UPDATE TABLE " . $this->classTable . "
-            SET year=:year,
-            section=:section,
-            class_incharge_id=:class_incharge_id,
-            current_semster=:current_semester 
+            "UPDATE " . $this->classTable . "
+            SET current_semester = :current_semester 
             WHERE class_id = :class_id"
         );
 
@@ -100,16 +93,87 @@ class ClassDetails
             throw new Exception('Invalid prepare statement');
         }
 
-        $result = $statement->execute([
-            'year' => $updatedDetails["year"],
-            'section' => $updatedDetails["section"],
-            'class_incharge_id' => $updatedDetails["class_incharge_id"],
-            'current_semester' => $updatedDetails["current_semester"],
-            'class_id' => $classId,
-        ]);
+        try {
+            $statement->execute([
+                'current_semester' => $currentSemester,
+                'class_id' => $classId,
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            return "Internal Error";
+        }
+    }
+    public function getSubjectDetailsByClassId($classId)
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT * FROM " . $this->classHasSubjectsTable . " WHERE class_id = :class_id"
+        );
 
-        if ($result === false) {
-            throw new Exception('Error executing the update statement: ');
+        if (false === $statement) {
+            return [];
+        }
+
+        $result = $statement->execute([":class_id" => $classId]);
+
+        if (false === $result) {
+            return [];
+        }
+
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $rows;
+    }
+    public function addSubjectsToClass($classId, $subjectDetails)
+    {
+
+        $message = '';
+        foreach ($subjectDetails as $subjectDetail) {
+            $addQuery = 'INSERT INTO ' . $this->classHasSubjectsTable . ' (class_id, subject_id, taught_by) VALUES (:class_id, :subject_id, :taught_by)';
+            $addStatement = $this->dbh->prepare($addQuery);
+
+            if (false === $addStatement) {
+                continue;
+            }
+
+            try {
+                $addStatement->execute([
+                    ":class_id" => $classId,
+                    ":subject_id" => $subjectDetail['subject_id'],
+                    ":taught_by" => $subjectDetail['taught_by'],
+                ]);
+            } catch (PDOException $e) {
+                if ($e->getCode() == '23000') {
+                    $message .= "Subject $subjectDetail[subject_id] already exists for Class $classId";
+                }
+            }
+
+        }
+
+        if (empty($message)) {
+            return 'Added successfully';
+        } else {
+            return $message;
+        }
+    }
+    public function removeSubjectsOfClass($classId, $subjectId, $taughtBy)
+    {
+        $deleteStatement = $this->dbh->prepare(
+            'DELETE FROM ' . $this->classHasSubjectsTable . ' WHERE class_id = :class_id AND subject_id = :subject_id AND taught_by = :taught_by'
+        );
+
+        if (false === $deleteStatement) {
+            return false;
+        }
+
+        try {
+            false === $deleteStatement->execute([
+                ':class_id' => $classId,
+                ':subject_id' => $subjectId,
+                ':taught_by' => $taughtBy,
+            ]);
+            return true;
+        } catch (Exception $e) {
+            return false;
         }
     }
 }

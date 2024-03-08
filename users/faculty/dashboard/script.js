@@ -8,8 +8,8 @@ const sectionIdMatch = url.match(/#(.+)$/);
 var sectionId = "";
 
 if (sectionIdMatch === null) {
-    window.location.href = "../dashboard/dashboard.php#view-attendance";
     sectionId = sections[0].id;
+    window.location.href = "../dashboard/dashboard.php#" + sectionId;
 } else {
     sectionId = sectionIdMatch[1];
 }

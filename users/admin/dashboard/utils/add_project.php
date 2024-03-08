@@ -8,11 +8,9 @@ if (isset($_SESSION['loggedIn']) && isset($_SESSION['adminId']) && $_SESSION['lo
     header("Location: ../../../login.php");
 }
 
-include '../../../models/Student.php';
-include '../../../models/User.php';
+include '../../../models/Project.php';
 
-$student = new Student();
-$user = new User();
+$project = new Project();
 ?>
 
 <!DOCTYPE html>
@@ -22,23 +20,23 @@ $user = new User();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../dashboard.style.css" />
-    <link rel="shortcut icon" href="../../../assets/images/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../../../../assets/images/favicon-icon.png" type="image/x-icon">
 
-    <title>Student Add Form</title>
+    <title>Project Add Form</title>
 </head>
 
 <body>
-    <h2>Student Details Form</h2>
-    <a href="../dashboard.php#view-students" class='btn-back'>Back to dashboard</a>
+    <h2>New Project Form</h2>
+    <a href="../dashboard.php#view-projects" class='btn-back'>Back to dashboard</a>
     <form method="POST" enctype='multipart/form-data'>
         <label for="title">Title:</label>
-        <input type="text" name="title" required>
+        <input type="text" id="title" name="title" required>
 
         <label for="domain">Domain:</label>
-        <input type="text" name="domain" required>
+        <input type="text" id="domain" name="domain" required>
 
         <label for="academic_year">Academic Year:</label>
-        <input type="text" name="academic_year" required>
+        <input type="text" id="academic_year" name="academic_year" required>
         
         <label for="type">Project Type:</label>
         <select name="type" id="type">
@@ -47,29 +45,25 @@ $user = new User();
         </select>
 
         <label for="student_names">Student Names(Comma Seperated):</label>
-        <input type="text" name="student_names" required>
-
-        <label for="team_number">Team Number:</label>
-        <input type="text" name="team_number" required>
+        <input type="text" id="student_names" name="student_names" required>
 
         <label for="mentor_name">Mentor Name:</label>
-        <input type="text" name="mentor_name" required>
+        <input type="text" id="mentor_name" name="mentor_name" required>
 
         <label for="presentation_file">Presentation File (PPT, PPTX, PDF):</label>
-        <input type="file" name="presentation_file" accept=".ppt, .pptx, .pdf" required>
+        <input type="file" id="presentation_file" name="presentation_file" accept=".ppt, .pptx, .pdf">
 
         <label for="documentation_file">Documentation File (PDF, DOC, DOCX):</label>
-        <input type="file" name="documentation_file" accept=".pdf" required>
+        <input type="file" id="documentation_file" name="documentation_file" accept=".pdf, .doc, .docx">
 
         <label for="code_file">Code File:</label>
-        <input type="file" name="code_file" required>
+        <input type="file" id="code_file" name="code_file">
 
         <label for="execution_video">Execution Video (MP4):</label>
-        <input type="file" name="execution_video" accept=".mp4" required>
+        <input type="file" id="execution_video" name="execution_video" accept=".mp4">
 
         <input type="submit" name="add-project" value="Add Project">
     </form>
-
     <?php
     if (isset($_POST['add-project'])) {
         $projectData = array(
@@ -78,7 +72,6 @@ $user = new User();
             'domain' => $_POST['domain'],
             'type' => $_POST['type'],
             'student_names' => $_POST['student_names'],
-            'team_number' => $_POST['team_number'],
             'mentor_name' => $_POST['mentor_name'],
         );
 
@@ -102,13 +95,11 @@ $user = new User();
             $message = "Error: " . $e->getMessage();
         }
 
-       
         echo "<script>
-                alert('$message');
+                alert($message);
                 window.location.href = '../dashboard.php#view-projects';
             </script>";
     }
-
     function uploadFile($inputName, $directory, $fileType)
     {
         $allowedTypes = [];
@@ -129,6 +120,7 @@ $user = new User();
                 break;
         }
 
+        $fileName = $fileType;
         $fileType = strtolower(pathinfo($_FILES[$inputName]["name"], PATHINFO_EXTENSION));
 
         if (!empty($allowedTypes) && !in_array($fileType, $allowedTypes)) {
@@ -136,7 +128,7 @@ $user = new User();
         } elseif ($_FILES[$inputName]["size"] > 50 * 1024 * 1024) {
             $message = "{$fileType} file upload failed. File size exceeds 50MB.";
         } else {
-            $fileName = "{$fileType}.{$fileType}";
+            $fileName = "{$fileName}.{$fileType}";
             $filePath = "{$directory}/{$fileName}";
 
             if (move_uploaded_file($_FILES[$inputName]["tmp_name"], $filePath)) {
@@ -145,13 +137,6 @@ $user = new User();
                 $message = "{$fileType} file upload failed.";
             }
         }
-
-        echo "<script>
-                alert('$message');
-                window.location.href = '../dashboard.php#view-projects';
-            </script>";
-
-        exit;
     }
     ?>
 

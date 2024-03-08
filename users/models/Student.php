@@ -3,22 +3,17 @@ class Student
 {
     private $dbh;
     private $studentTable = 'student';
-
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -70,16 +65,16 @@ class Student
     {
         $statement = $this->dbh->prepare(
             "UPDATE " . $this->studentTable . "
-        SET first_name=:first_name,
-        middle_name=:middle_name,
-        last_name=:last_name,
-        salutation=:salutation,
-        gender=:gender,
-        date_of_birth=:date_of_birth,
-        email=:email,
-        year=:year,
-        section=:section
-        WHERE student_id = :student_id"
+            SET first_name=:first_name,
+            middle_name=:middle_name,
+            last_name=:last_name,
+            salutation=:salutation,
+            gender=:gender,
+            date_of_birth=:date_of_birth,
+            email=:email,
+            year=:year,
+            section=:section
+            WHERE student_id = :student_id"
         );
 
         if (false === $statement) {
@@ -135,7 +130,7 @@ class Student
         }
 
         try {
-            $result = $statement->execute([
+            $statement->execute([
                 ':student_id' => $newStudentDetails['student_id'],
                 ':first_name' => $newStudentDetails['first_name'],
                 ':middle_name' => $newStudentDetails['middle_name'],
@@ -147,13 +142,12 @@ class Student
                 ':year' => $newStudentDetails['year'],
                 ':section' => $newStudentDetails['section'],
             ]);
-
-            if (false === $result) {
-                return false;
-            }
             return true;
         } catch (PDOException $e) {
-            return false;
+            if ($e->getCode() == '23000') {
+                return "Student already exists";
+            }
+            return "Internal Error Occured";
         }
     }
 }

@@ -120,7 +120,6 @@ $staffId = $_GET['id'];
         }
         ?>
     </form>
-
     <?php
     if (isset($_POST['update-details'])) {
         $updatedDetails = array(

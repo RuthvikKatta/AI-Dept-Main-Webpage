@@ -3,22 +3,17 @@ class Project
 {
     private $dbh;
     private $projectTable = 'project';
-
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -99,8 +94,8 @@ class Project
     public function addProject($projectData)
     {
         $statement = $this->dbh->prepare(
-            "INSERT INTO " . $this->projectTable . " (academic_year, title, domain, type, student_names, team_number, mentor_name) VALUES 
-                (:academic_year, :title, :domain, :type, :student_names, :team_number, :mentor_name)"
+            "INSERT INTO " . $this->projectTable . " (academic_year, title, domain, type, student_names, mentor_name) VALUES 
+                (:academic_year, :title, :domain, :type, :student_names, :mentor_name)"
         );
 
         if (false === $statement) {
@@ -114,7 +109,6 @@ class Project
                 ":domain" => $projectData['domain'],
                 ":type" => $projectData['type'],
                 ":student_names" => $projectData['student_names'],
-                ":team_number" => $projectData['team_number'],
                 ":mentor_name" => $projectData['mentor_name'],
             ])
         ) {

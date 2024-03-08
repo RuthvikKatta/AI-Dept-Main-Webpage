@@ -13,6 +13,9 @@ include '../../../models/Student.php';
 $student = new Student();
 
 $studentId = $_GET['id'];
+if(empty($studentId)) {
+    header("Location: ../dashboard.php#view-students");
+}
 ?>
 
 <!DOCTYPE html>

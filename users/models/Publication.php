@@ -3,22 +3,17 @@ class Publication
 {
     private $dbh;
     private $publicationTable = 'publication';
-
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -100,8 +95,8 @@ class Publication
     public function addPublication($publicationData)
     {
         $statement = $this->dbh->prepare(
-            "INSERT INTO " . $this->publicationTable . " (title, paper_id, journal_name, domain, abstract, authors, roleType) VALUES 
-                (:title, :paper_id, :journal_name, :domain, :abstract, :authors, :roleType)"
+            "INSERT INTO " . $this->publicationTable . " (title, paper_id, journal_name, domain, abstract, authors, role_type) VALUES 
+                (:title, :paper_id, :journal_name, :domain, :abstract, :authors, :role_type)"
         );
 
         if (false === $statement) {
@@ -116,43 +111,30 @@ class Publication
                 ":domain" => $publicationData['domain'],
                 ":abstract" => $publicationData['abstract'],
                 ":authors" => $publicationData['authors'],
-                ":roleType" => $publicationData['roleType']
+                ":role_type" => $publicationData['role_type']
             ])
         ) {
             throw new Exception(implode(' ', $statement->errorInfo()));
         }
+
+        return $this->dbh->lastInsertId();
     }
-    public function editPoublicationDetails($publicationId, $updatedDetails)
+    public function deletePublicationByPublicationId($publicationId)
     {
         $statement = $this->dbh->prepare(
-            "UPDATE TABLE " . $this->publicationTable . "
-            SET title=:title,
-            paper_id=:paper_id,
-            journal_name=:journal_name,
-            domain=:domain,
-            abstract=:abstract,
-            authors=:authors,
-            role_type=:role_type
-            WHERE publication_id = :publication_id"
+            "DELETE FROM " . $this->publicationTable . " WHERE publication_id = :publication_id"
         );
 
         if (false === $statement) {
             throw new Exception('Invalid prepare statement');
         }
 
-        $result = $statement->execute([
-            ":title" => $updatedDetails["title"],
-            ":paper_id" => $updatedDetails["paper_id"],
-            ":journal_name" => $updatedDetails["journal_name"],
-            ":domain" => $updatedDetails["domain"],
-            ":abstract" => $updatedDetails["abstract"],
-            ":authors" => $updatedDetails["authors"],
-            ":role_type" => $updatedDetails["role_type"],
-            ':publication_id' => $publicationId
-        ]);
+        $result = $statement->execute([':publication_id' => $publicationId]);
 
-        if ($result === false) {
-            throw new Exception('Error executing the update statement: ');
+        if (false === $result) {
+            throw new Exception('Publication deletion failed');
         }
+
+        return true;
     }
 }

@@ -1,25 +1,21 @@
 <?php
 
-class staff
+class Staff
 {
     private $dbh;
     private $staffTable = 'staff';
     private $designationTable = 'designation';
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -35,6 +31,28 @@ class staff
         }
 
         $result = $statement->execute();
+
+        if (false === $result) {
+            return [];
+        }
+
+        $facultyResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $facultyResult;
+    }
+    public function getStaffByRole($role)
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT * FROM " . $this->staffTable ." WHERE role = :role"
+        );
+
+        if (false === $statement) {
+            return [];
+        }
+
+        $result = $statement->execute([
+            ":role" => $role
+        ]);
 
         if (false === $result) {
             return [];
@@ -102,7 +120,7 @@ class staff
         }
 
         try {
-            $result = $statement->execute([
+            $statement->execute([
                 ':staff_id' => $staffDetails['staff_id'],
                 ':first_name' => $staffDetails['first_name'],
                 ':middle_name' => $staffDetails['middle_name'],
@@ -117,14 +135,12 @@ class staff
                 ':mobile_number' => $staffDetails['mobile_number'],
                 ':email' => $staffDetails['email'],
             ]);
-
-            if (false === $result) {
-                return false;
-            }
-
-            return true;
-        } catch (PDOException $e) {
             return false;
+        } catch (PDOException $e) {
+            if ($e->getCode() == '23000') {
+                return "Staff already exists";
+            }
+            return "Internal Error Occured";
         }
     }
     public function updateStaffDetails($staffId, $updatedDetails)

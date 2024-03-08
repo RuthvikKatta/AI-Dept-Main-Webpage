@@ -8,8 +8,8 @@ const sectionIdMatch = url.match(/#(.+)$/);
 var sectionId = "";
 
 if(sectionIdMatch === null){
-    window.location.href = "../dashboard/dashboard.php#view-attendance";
     sectionId = sections[0].id;
+    window.location.href = "../dashboard/dashboard.php#" + sectionId;
 } else {
     sectionId = sectionIdMatch[1];
 }
@@ -40,19 +40,6 @@ function activelink() {
 
 list.forEach((item) => {
     item.addEventListener("click", activelink);
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    var materialTypeSelect = document.getElementById('material-type');
-    var subjectSelect = document.getElementById('subject');
-
-    materialTypeSelect.addEventListener('change', function () {
-        if (materialTypeSelect.value === 'AC') {
-            subjectSelect.disabled = true;
-        } else {
-            subjectSelect.disabled = false;
-        }
-    });
 });
 
 // let table = new DataTable('#cummulative-attendance', {

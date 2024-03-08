@@ -18,6 +18,7 @@ include '../../models/Student.php';
 include '../../models/Staff.php';
 include '../../models/Project.php';
 include '../../models/Publication.php';
+include '../../models/Mentoring.php';
 
 $subject = new Subject();
 $attendance = new Attendance();
@@ -29,6 +30,7 @@ $student = new Student();
 $staff = new Staff();
 $project = new Project();
 $publication = new Publication();
+$mentoring = new Mentoring();
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +56,7 @@ $publication = new Publication();
             <ul>
                 <li><a href="#view-attendance">Attendance</a></li>
                 <li><a href="#view-faculty-leisures">Faculty Leisure</a></li>
+                <li><a href="#view-mentoring">View Mentoring</a></li>
                 <li><a href="#view-media">View Media</a></li>
                 <li><a href="#view-material">View Material</a></li>
                 <li><a href="#view-students">View Students</a></li>
@@ -156,19 +159,41 @@ $publication = new Publication();
                 $day = date('l', strtotime($date));
 
                 $rows = $timeTable->getTodaysLeisures($day, $startTime, $endTime);
+            }
+            ?>
+        </section>
 
-                print_r($rows);
+        <section id="view-mentoring">
+            <h2>All Mentors</h2>
+            <?php
+            $mentors = $staff->getAllStaff();
+            echo "<table>
+                        <thead>
+                            <tr>
+                            <th>Mentor ID</th>
+                            <th>Name</th>
+                            <th>View Mentees</th>
+                            </tr>
+                        </thead><tbody>";
+            if (count($mentors) > 0) {
+                foreach ($mentors as $m) {
+                    $mentorId = $m['staff_id'];
+                    $sd = $staff->getStaffDetails($mentorId);
+                    $mentorName = $sd['last_name'] . " " . $sd['first_name'] . " " . $sd['middle_name'];
+                    echo "<tr>
+                                <td>{$mentorId}</td>
+                                <td>$mentorName</td>
+                                <td><a href='./utils/edit_mentees.php?id=$mentorId'>View Mentees</a></td>
+                                </tr>";
+                }
+                echo "</tbody></table>";
             }
             ?>
         </section>
 
         <section id="view-media">
-            <form method='post' action='./media_page.php' enctype='multipart/form-data' class="image-upload-form">
-                <h2 class='form-title'>Media Adding form</h2>
-                <label>Choose Image</label>
-                <input type='file' name='image' required class='form-control'>
-                <input type='submit' name='submit-image' value='Submit' class='upload-button'>
-            </form>
+            <h2>Uploaded Media</h2>
+            <a href='./utils/add_media.php' class='btn btn-add'>Add Images</a>
             <table>
                 <thead>
                     <tr>
@@ -187,7 +212,7 @@ $publication = new Publication();
                             <tr>
                             <td>" . $index++ . "</td>
                             <td><img src='../../../Database/Carousal Images/{$image["file_name"]}' style='height:80px;' ></td>
-                            <td><a href='delete_image.php?id={$image["id"]}&name={$image["file_name"]}' class='btn btn-danger'>Delete</a></td>
+                            <td><a href='./utils/delete_media.php?id={$image["id"]}&name={$image["file_name"]}' class='btn btn-danger'>Delete</a></td>
                             </tr>";
                         }
                     } else {
@@ -199,31 +224,8 @@ $publication = new Publication();
         </section>
 
         <section id="view-material">
-            <form method='post' action='./material_page.php' enctype="multipart/form-data" class='material-upload-form'>
-                <h2 class='form-title'>Material Adding form</h2>
-                <label>Choose File Type:</label>
-                <select name="material-type" id="material-type" required>
-                    <option value="">Choose Material Type</option>
-                    <option value="AC">Acadmeic Calendar</option>
-                    <option value="PQP">Previous Question Paper</option>
-                    <option value="SM">Subject Material</option>
-                </select>
-                <label for="subject">Choose Subject: </label>
-                <select name="subject" id="subject">
-                    <option value="">Choose Subject</option>
-                    <?php
-                    $rows = $subject->getAllSubjects();
-                    if (count($rows) > 0) {
-                        foreach ($rows as $row) {
-                            echo "<option value=" . $row['subject_id'] . ">" . $row['name'] . "</option>";
-                        }
-                    }
-                    ?>
-                </select>
-                <label>Choose File:</label>
-                <input type='file' name='material' required class='form-control'>
-                <input type='submit' name='submit-material' value='Submit' class='upload-button'>
-            </form>
+            <h2>Uploaded Materials</h2>
+            <a href='./utils/add_material.php' class='btn btn-add'>Add Material</a>
             <table>
                 <thead>
                     <tr>
@@ -251,7 +253,7 @@ $publication = new Publication();
                                 <td>$mat[name]</td>
                                 <td>" . $materialTypeDescriptions[$mat['material_type']] . "</td>
                                 <td><a target='_BLANK' href='/AI-Main-Page/Database/Material/$mat[name]' class='btn btn-view'>View File</a></td>
-                                <td><a href='delete_material.php?id={$mat["material_id"]}&name={$mat["name"]}' class='btn btn-danger'>Delete</a></td>
+                                <td><a href='./utils/delete_material.php?id={$mat["material_id"]}&name={$mat["name"]}' class='btn btn-danger'>Delete</a></td>
                             </tr>";
                         }
                     } else {
@@ -326,7 +328,6 @@ $publication = new Publication();
                         <th>Staff Id</th>
                         <th>Name</th>
                         <th>Edit</th>
-                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -339,7 +340,6 @@ $publication = new Publication();
                         <td>" . $s['staff_id'] . "</td>
                         <td>" . $s['last_name'] . " " . $s['first_name'] . " " . $s['middle_name'] . "</td>
                         <td><a href='./utils/edit_staff.php?id=$s[staff_id]'>Edit</a></td>
-                        <td><a href='./utils/delete_staff.php?id=$s[staff_id]'>Delete</a></td>
                     </tr>";
                         }
                     } else {
@@ -353,7 +353,7 @@ $publication = new Publication();
         <section id="view-projects">
             <h2>All Projects</h2>
             <a href='./utils/add_project.php' class='btn btn-add'>Add Project</a>
-            <table>
+            <table style="width: 60vw">
                 <thead>
                     <tr>
                         <th>Project Id</th>
@@ -383,8 +383,8 @@ $publication = new Publication();
 
         <section id="view-publications">
             <h2>All Publications</h2>
-            <a href='./add_project.php' class='btn btn-add'>Add Publication</a>
-            <table>
+            <a href='./utils/add_publication.php' class='btn btn-add'>Add Publication</a>
+            <table style="width: 60vw">
                 <thead>
                     <tr>
                         <th>Publication Id</th>
@@ -401,7 +401,7 @@ $publication = new Publication();
                             echo "<tr>
                             <td>" . $p['publication_id'] . "</td>
                             <td>" . $p['title'] . "</td>
-                            <td><a href='./delete_publication.php?id=$p[publication_id]'>Delete</a></td>
+                            <td><a href='./utils/delete_publication.php?id=$p[publication_id]'>Delete</a></td>
                         </tr>";
                         }
                     } else {
@@ -414,7 +414,7 @@ $publication = new Publication();
 
         <section id="view-subjects">
             <h2>All Subjects</h2>
-            <a href='./add_subject.php' class='btn btn-add'>Add Subject</a>
+            <a href='./utils/add_subject.php' class='btn btn-add'>Add Subject</a>
             <table>
                 <thead>
                     <tr>
@@ -423,7 +423,6 @@ $publication = new Publication();
                         <th>Credits</th>
                         <th>Type</th>
                         <th>Edit</th>
-                        <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -437,8 +436,7 @@ $publication = new Publication();
                             <td>" . $s['name'] . "</td>
                             <td>" . $s['credits'] . "</td>
                             <td>" . $s['type'] . "</td>
-                            <td><a href='./edit_subject.php?id=$s[subject_id]'>Edit</a></td>
-                            <td><a href='./delete_subject.php?id=$s[subject_id]'>Delete</a></td>
+                            <td><a href='./utils/edit_subject.php?id=$s[subject_id]'>Edit</a></td>
                         </tr>";
                         }
                     } else {
@@ -451,15 +449,14 @@ $publication = new Publication();
 
         <section id="view-classes">
             <h2>All Classes</h2>
-            <a href='./add_subject.php' class="btn btn-add">Add Class</a>
             <table>
                 <thead>
                     <tr>
                         <th>Class Id</th>
                         <th>Year</th>
                         <th>Section</th>
-                        <th>Semeter</th>
-                        <th>Edit</th>   
+                        <th>Semester</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -473,7 +470,7 @@ $publication = new Publication();
                             <td>" . $c['year'] . "</td>
                             <td>" . $c['section'] . "</td>
                             <td>" . $c['current_semester'] . "</td>
-                            <td><a href='./edit_class.php?id=$c[class_id]'>Edit</a></td>
+                            <td><a href='./utils/edit_classdetails.php?id=$c[class_id]'>Edit</a></td>
                         </tr>";
                         }
                     } else {
@@ -489,8 +486,7 @@ $publication = new Publication();
             <a href='../../logout.php?logout=true' class='logout'>Logout</a>
         </section>
 
-        <!--TODO: similar type of functionality for editing mentoring details, class_has_subjects, staff_teaching_subjects -->
-
+        <!-- TODO: class details should have feature to add subjects just like mentoring -->
     </main>
 </body>
 

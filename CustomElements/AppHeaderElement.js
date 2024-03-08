@@ -26,7 +26,7 @@ class AppHeaderElement extends HTMLElement {
                     <a href="/AI-Main-Page/Staff/index.php?role=Non Teaching">Non Teaching</a>
                 </div>
                 </li>
-                <li><a href="/AI-Main-Page/Publications/"> Publication </a></li>
+                <li><a href="/AI-Main-Page/Publications/"> Publications </a></li>
                 <li><a href="/AI-Main-Page/Projects/"> Projects </a></li>
                 <li class="dropdown">Download Material
                     <img class="dropdown-icons" src="/AI-Main-Page/assets/Icons/caret-up-solid.svg" width="10">

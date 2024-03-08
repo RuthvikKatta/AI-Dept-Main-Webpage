@@ -16,7 +16,7 @@ $projectId = $_GET['id'];
 
     <link rel="stylesheet" href="./project.style.css">
     <link rel="stylesheet" href="../style.css">
-    <link rel="shortcut icon" href="../assets/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/Images/favicon-icon.png" type="image/x-icon">
 
     <script src="../CustomElements/AppHeaderElement.js" defer></script>
 </head>
@@ -34,7 +34,7 @@ $projectId = $_GET['id'];
             echo "<p><strong>Developed By:</strong> " . $row['student_names'] . "</p>";
 
             $fileExtensions = [
-                'Documentation' => 'pdf',
+                'Documentation' => ['pdf', 'doc', 'docx'],
                 'Presentation' => ['ppt', 'pptx'],
                 'Code' => 'zip',
             ];
@@ -42,7 +42,7 @@ $projectId = $_GET['id'];
             foreach ($fileExtensions as $fileType => $extensions) {
                 $fileExists = false;
                 $fileLink = "#";
-        
+
                 if (is_array($extensions)) {
                     foreach ($extensions as $extension) {
                         $filePath = "../Database/Projects/{$projectId}/{$fileType}.{$extension}";
@@ -64,7 +64,7 @@ $projectId = $_GET['id'];
                 }
 
                 echo $fileExists
-                    ? "<p><a class='download-button' href='{$fileLink}' download>Download {$fileType}</a></p>"
+                    ? "<p><a target='_BLANK' class='download-button' href='{$fileLink}' download>Download {$fileType}</a></p>"
                     : "<p class='error'>{$fileType} not available for this project.</p>";
             }
 
@@ -93,18 +93,35 @@ $projectId = $_GET['id'];
         <p style="margin-top: 2rem"><a data-back="true" href="./">Back to Search</a></p>
     </div>
 </body>
+
 <script>
     const closeIcon = document.querySelector('.close-icon');
     const popUp = document.querySelector('.pop-up');
     const playVideoButton = document.querySelector('.play-video');
+    const video = document.querySelector('.video-container video');
 
     playVideoButton.addEventListener('click', () => {
         popUp.classList.add('reveal');
-    })
+        adjustVideoWidth();
+    });
 
     closeIcon.addEventListener('click', () => {
         popUp.classList.remove('reveal');
-    })
+        stopVideo();
+    });
+
+    function adjustVideoWidth() {
+        const aspectRatio = video.videoWidth / video.videoHeight;
+
+        if(aspectRatio < 1){
+            video.width = 250;
+        }
+    }
+
+    function stopVideo() {
+        video.pause();
+        video.currentTime = 0;
+    }
 </script>
 
 </html>

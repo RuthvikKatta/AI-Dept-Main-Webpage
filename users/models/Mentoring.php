@@ -5,22 +5,17 @@ class Mentoring
     private $mentoringTable = 'mentoring';
     private $mentoringLogTable = 'mentoring_log';
     private $mentoringQnA = 'mentoring_qna';
-
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -197,53 +192,74 @@ class Mentoring
 
         return ['question' => $questions, 'answer' => $answers];
     }
-    public function assignMentees($mentor_id, array $mentee_ids)
+    public function removeMentees($mentor_id, $mentee_id)
     {
+        $deleteStatement = $this->dbh->prepare(
+            'DELETE FROM ' . $this->mentoringTable . ' WHERE mentor_id = :mentor_id AND mentee_id = :mentee_id'
+        );
+
+        if (false === $deleteStatement) {
+            return false;
+        }
+        
         try {
-            $insertStatement = $this->dbh->prepare(
-                'INSERT INTO ' . $this->mentoringTable . ' (mentor_id, mentee_id) VALUES (:mentor_id, :mentee_id)'
-            );
-
-            if (false === $insertStatement) {
-                throw new Exception('Invalid prepare statement for insert');
-            }
-
-            foreach ($mentee_ids as $mentee_id) {
-                $insertResult = $insertStatement->execute([
-                    ':mentor_id' => $mentor_id,
-                    ':mentee_id' => $mentee_id,
-                ]);
-
-                if (false === $insertResult) {
-                    throw new Exception('Error inserting relationship: ' . $insertStatement->errorInfo()[2]);
-                }
-            }
+            false === $deleteStatement->execute([
+                ':mentor_id' => $mentor_id,
+                ':mentee_id' => $mentee_id,
+            ]);
         } catch (Exception $e) {
-
+            return false;
         }
     }
-    public function removeMentees($mentor_id, $mentee_ids)
+    public function assignMentees($mentorId, $menteeIds)
     {
-        try {
-            $deleteStatement = $this->dbh->prepare(
-                'DELETE FROM ' . $this->mentoringTable . ' WHERE mentor_id = :mentor_id AND mentee_id = :mentee_id'
-            );
+        $message = '';
 
-            if (false === $deleteStatement) {
-                throw new Exception('Invalid prepare statement for delete');
+        foreach ($menteeIds as $menteeId) {
+            $checkQuery = 'SELECT mentee_id, mentor_id FROM ' . $this->mentoringTable . ' WHERE mentee_id = :mentee_id';
+            $checkStatement = $this->dbh->prepare($checkQuery);
+
+            if (false === $checkStatement) {
+                continue;
             }
 
-            foreach ($mentee_ids as $mentee_id) {
-                $deleteResult = $deleteStatement->execute([
-                    ':mentor_id' => $mentor_id,
-                    ':mentee_id' => $mentee_id,
-                ]);
+            $checkResult = $checkStatement->execute([
+                ":mentee_id" => $menteeId
+            ]);
 
-                if (false === $deleteResult) {
-                    throw new Exception('Error deleting relationship: ' . $deleteStatement->errorInfo()[2]);
-                }
+            if (false === $checkResult) {
+                continue;
             }
-        } catch (Exception $e) {
+
+            $checkStatementResult = $checkStatement->fetch(PDO::FETCH_ASSOC);
+            
+            if (!empty($checkStatementResult)) {
+                $existingMentorId = $checkStatementResult['mentor_id'];
+                $message .= "$menteeId is already assigned to $existingMentorId. \n";
+                continue; 
+            }
+
+            $addQuery = 'INSERT INTO ' . $this->mentoringTable . ' (mentor_id, mentee_id) VALUES (:mentor_id, :mentee_id)';
+            $addStatement = $this->dbh->prepare($addQuery);
+
+            if (false === $addStatement) {
+                continue;
+            }
+
+            $addResult = $addStatement->execute([
+                ":mentor_id" => $mentorId,
+                ":mentee_id" => $menteeId
+            ]);
+
+            if (false === $addResult) {
+                $message .= "$menteeId Doesn't Exist. \n";
+            }
+        }
+
+        if (empty($message)) {
+            return 'Added successfully';
+        } else {
+            return $message;
         }
     }
 }

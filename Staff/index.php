@@ -1,18 +1,9 @@
 <?php
-include '../Connection/Connection.php';
+include '../users/models/Staff.php';
+
+$staff = new Staff();
 
 $role = isset($_GET['role']) ? $_GET['role'] : 'Teaching';
-$tablename = 'staff';
-
-$query = "SELECT * FROM $tablename where role = '$role' ORDER BY designation_id DESC";
-$result = $conn->query($query);
-$data = array();
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -34,44 +25,40 @@ if ($result->num_rows > 0) {
     <app-header></app-header>
     <section class="profiles-container">
         <h1 class="title">
-            <?php echo $role .' Staff'?>
+            <?php echo $role . ' Staff' ?>
         </h1>
         <div class="staff-profiles">
             <?php
+            $data = $staff->getStaffByRole($role);
             foreach ($data as $row) {
-                $designation_table = 'designation';
-                $designation_query = "SELECT title FROM $designation_table WHERE designation_id = ?";
 
-                $stmt = $conn->prepare($designation_query);
-                $stmt->bind_param("i", $row['designation_id']);
-                $stmt->execute();
+                $designation = $staff->getDesignation($row['designation_id']);
 
-                $designation_result = $stmt->get_result();
-                $designation = $designation_result->fetch_assoc()['title'];
+                $profileImagePath = '../Database/Staff/' . $row['staff_id'] . '.jpeg';
 
-                $profile_image = $row['profile_image_link'] == '' ? 
-                                    '../assets/Icons/' . ($row['gender'] == 'Male' ? 'Male.png' : 'Female.png') :
-                                    '../' .$row['profile_image_link'];
+                if (!file_exists($profileImagePath)) {
+                    $profileImagePath = '../Database/Staff/' . $row['staff_id'] . '.jpg';
+
+                    if (!file_exists($profileImagePath)) {
+                        $profileImagePath = '../assets/Icons/' . ($row['gender'] == 'Male' ? 'Male.png' : 'Female.png');
+                    }
+                }
 
                 echo '<div class="profile">
                             <div class="profile-image">
-                                <img src="'. $profile_image .'" alt="Profile">
+                                <img src="' . $profileImagePath . '" alt="Profile" width="150">
                             </div>
                             <div class="profile-details">
                                 <h2>
-                                    <a href="../Profile/profile.php?id='. $row['staff_id'] .'">
-                                    '. $row['salutation'] .' ' . $row['first_name'] . ' ' . $row['last_name'] . '
+                                    <a href="../Profile/index.php?id=' . $row['staff_id'] . '">
+                                    ' . $row['salutation'] . ' ' . $row['first_name'] . ' ' . $row['last_name'] . '
                                     </a>
                                 </h2>
-                                <h3>' . $designation . '</h3>
+                                <h3>' . $designation['title'] . '</h3>
                                 <p>' . $row['qualification'] . '</p>
                             </div>
                           </div>';
-
-                $stmt->close();
             }
-
-            mysqli_close($conn);
             ?>
         </div>
     </section>

@@ -27,7 +27,7 @@ $publication = new Publication();
             <h1 class="publication-title">Publication Search</h1>
             <label for="journal-name">Journal Name:</label>
             <select id="journal-name" name="journal-name">
-                <option value="">Select Year</option>
+                <option value="">Select Journal</option>
                 <?php
                 $selectedYear = isset($_POST['journal-name']) ? $_POST['journal-name'] : null;
                 $selectedDomain = isset($_POST['domain']) ? $_POST['domain'] : null;

@@ -31,7 +31,7 @@ $marks = new Marks();
 
 <body>
     <section id="marks">
-    <a href="./dashboard.php" class='btn-back'>Back to dashboard</a>
+    <a href="./dashboard.php#marks" class='btn-back'>Back to dashboard</a>
         <section class="upload-marks-form">
             <?php
             $teachingDetails = $subject->getTeachingDetails($facultyId);

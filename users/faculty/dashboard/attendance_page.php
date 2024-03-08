@@ -31,7 +31,7 @@ $subject = new Subject();
 
 <body>
     <section id="attendance">
-        <a href="./dashboard.php" class='btn-back'>Back to dashboard</a>
+        <a href="./dashboard.php#attendance" class='btn-back'>Back to dashboard</a>
         <section class="attendance-details">
             <?php
             $teachingDetails = $subject->getTeachingDetails($facultyId);

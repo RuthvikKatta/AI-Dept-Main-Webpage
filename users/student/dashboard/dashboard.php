@@ -122,11 +122,12 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
             }
             echo "</tr><tr><td>Total Classes</td>";
 
+            $totalClassesCount = [];
             foreach ($totalClasses as $subjectClass) {
                 echo "<td>" . $subjectClass['total_classes'] . "</td>";
+                $totalClassesCount[$subjectClass['subject_id']] = $subjectClass['total_classes'];
             }
 
-            $totalClassesCount = array_sum(array_column($totalClasses, 'total_classes'));
             $totalPresentClasses = array_fill_keys($subjectIds, 0);
 
             foreach ($rows as $row) {
@@ -140,8 +141,12 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
 
             echo "<tr><td>Percentage</td>";
             foreach ($subjectIds as $subjectId) {
-                $percentage = ($totalPresentClasses[$subjectId] / $totalClassesCount) * 100;
-                echo "<td>" . round($percentage, 2) . "%</td>";
+                if($totalClassesCount[$subjectId] == 0) {
+                    echo "<td>0%</td>";
+                } else {
+                    $percentage = ($totalPresentClasses[$subjectId] / $totalClassesCount[$subjectId]) * 100;
+                    echo "<td>" . round($percentage, 2) . "%</td>";
+                }
             }
             echo "</tr></table>";
             ?>

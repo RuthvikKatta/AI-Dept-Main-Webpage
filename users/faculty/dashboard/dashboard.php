@@ -85,11 +85,17 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
   <main>
     <section id="profile">
       <?php
-      $row = $staff->getFacultyDetails($facultyId);
+      $row = $staff->getStaffDetails($facultyId);
 
-      $profile_image = $row['profile_image_link'] == '' ?
-        '/AI-MAIN-PAGE/assets/Icons/' . ($row['gender'] == 'Male' ? 'Male.png' : 'Female.png') :
-        '/AI-MAIN-PAGE/' . $row['profile_image_link'];
+      $profileImagePath = '../../../Database/Staff/' . $row['staff_id'] . '.jpeg';
+
+      if (!file_exists($profileImagePath)) {
+        $profileImagePath = '../../../Database/Staff/' . $row['staff_id'] . '.jpg';
+
+        if (!file_exists($profileImagePath)) {
+          $profileImagePath = '../../../assets/Icons/' . ($row['gender'] == 'Male' ? 'Male.png' : 'Female.png');
+        }
+      }
 
       $designation_id = $row['designation_id'];
       $designation_result = $staff->getDesignation($designation_id);
@@ -97,7 +103,7 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
       ?>
       <div class="profile-container">
         <div class="profile-image">
-          <img src="<?php echo $profile_image ?>" alt="Profile Image">
+          <img src="<?php echo $profileImagePath ?>" alt="Profile Image">
         </div>
         <div class="profile-info">
           <h2 class="profile-name">
@@ -313,11 +319,12 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
             }
             echo "</tr><tr><td>Total Classes</td>";
 
+            $totalClassesCount = [];
             foreach ($totalClasses as $subjectClass) {
               echo "<td>" . $subjectClass['total_classes'] . "</td>";
+              $totalClassesCount[$subjectClass['subject_id']] = $subjectClass['total_classes'];
             }
 
-            $totalClassesCount = array_sum(array_column($totalClasses, 'total_classes'));
             $totalPresentClasses = array_fill_keys($subjectIds, 0);
 
             foreach ($rows as $row) {
@@ -331,8 +338,12 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
 
             echo "<tr><td>Percentage</td>";
             foreach ($subjectIds as $subjectId) {
-              $percentage = ($totalPresentClasses[$subjectId] / $totalClassesCount) * 100;
-              echo "<td>" . round($percentage, 2) . "%</td>";
+              if ($totalClassesCount[$subjectId] == 0) {
+                echo "<td>0%</td>";
+              } else {
+                $percentage = ($totalPresentClasses[$subjectId] / $totalClassesCount[$subjectId]) * 100;
+                echo "<td>" . round($percentage, 2) . "%</td>";
+              }
             }
             echo "</tr></table>";
 
