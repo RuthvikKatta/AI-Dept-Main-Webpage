@@ -185,11 +185,11 @@ class Marks
 
         return $rows;
     }
-    public function getBacklogsByStudentId(string $studentId, string $status)
+    public function getBacklogsByStudentId(string $studentId)
     {
         $statement = $this->dbh->prepare(
             "SELECT sb.subject_id, sb.name, bt.year, bt.semester FROM " . $this->backlogsTable . " bt
-            LEFT JOIN " . $this->subjectTable . " sb ON bt.subject_id = sb.subject_id WHERE bt.student_id = :student_id AND bt.status = :status"
+            LEFT JOIN " . $this->subjectTable . " sb ON bt.subject_id = sb.subject_id WHERE bt.student_id = :student_id"
         );
 
         if (false === $statement) {
@@ -198,7 +198,6 @@ class Marks
 
         $results = $statement->execute([
             ':student_id' => $studentId,
-            ':status' => $status,
         ]);
 
         if (false === $results) {
@@ -208,5 +207,70 @@ class Marks
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $rows;
+    }
+    public function getBacklogs()
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT bt.record_id, bt.student_id, sb.subject_id, sb.name, bt.year, bt.semester FROM " . $this->backlogsTable . " bt
+            LEFT JOIN " . $this->subjectTable . " sb ON bt.subject_id = sb.subject_id"
+        );
+
+        if (false === $statement) {
+            return [];
+        }
+
+        $results = $statement->execute();
+
+        if (false === $results) {
+            return [];
+        }
+
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $rows;
+    }
+    public function removeRecord($recordId)
+    {
+        $statement = $this->dbh->prepare(
+            "DELETE FROM " . $this->backlogsTable . " WHERE record_id = :record_id"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        $result = $statement->execute([
+            ":record_id" => $recordId
+        ]);
+
+        if (false === $result) {
+            return false;
+        }
+        return true;
+    }
+    public function addBacklogRecords($backlogRecords)
+    {
+        $statement = $this->dbh->prepare(
+            'INSERT INTO ' . $this->backlogsTable . ' (student_id, subject_id, year, semester) 
+        VALUES (:student_id, :subject_id, :year, :semester)'
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        foreach ($backlogRecords as $record) {
+            try {
+                $statement->execute([
+                    ':student_id' => $record['student_id'],
+                    ':subject_id' => $record['subject_id'],
+                    ':year' => $record['year'],
+                    ':semester' => $record['semester'],
+                ]);
+            } catch (Exception $e){
+
+            }
+        }
+        return true;
     }
 }

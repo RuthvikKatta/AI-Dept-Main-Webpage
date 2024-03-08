@@ -26,7 +26,7 @@ class TimeTable
     public function getTodaysLeisures($day, $startTime, $endTime)
     {
         $statement = $this->dbh->prepare(
-            "SELECT instructor_id FROM " . $this->timeTable . " WHERE day = :day AND start_time >= :start_time AND end_time <= :end_time"
+            "SELECT * FROM " . $this->timeTable . " WHERE day = :day AND start_time >= :start_time AND end_time <= :end_time"
         );
 
         if (false === $statement) {

@@ -19,6 +19,7 @@ include '../../models/Staff.php';
 include '../../models/Project.php';
 include '../../models/Publication.php';
 include '../../models/Mentoring.php';
+include '../../models/Marks.php';
 
 $subject = new Subject();
 $attendance = new Attendance();
@@ -31,6 +32,7 @@ $staff = new Staff();
 $project = new Project();
 $publication = new Publication();
 $mentoring = new Mentoring();
+$marks = new Marks();
 ?>
 
 <!DOCTYPE html>
@@ -65,6 +67,7 @@ $mentoring = new Mentoring();
                 <li><a href="#view-publications">View Publications</a></li>
                 <li><a href="#view-subjects">View Subjects</a></li>
                 <li><a href="#view-classes">View Class Details</a></li>
+                <li><a href="#view-backlogs">View Backlogs Of Students</a></li>
                 <li><a href="#logout">Logout</a></li>
             </ul>
         </div>
@@ -159,6 +162,31 @@ $mentoring = new Mentoring();
                 $day = date('l', strtotime($date));
 
                 $rows = $timeTable->getTodaysLeisures($day, $startTime, $endTime);
+
+                echo "<table><thead>
+                        <tr>
+                            <th>Faculty ID</th>
+                            <th>Name</th>
+                            <th>Day</th>
+                            <th>From</th>
+                            <th>To</th>
+                        </tr></thead><tbody>";
+                if (count($rows) > 0) {
+                    foreach ($rows as $row) {
+                        $sd = $staff->getStaffDetails($row['instructor_id']);
+                        $name = $sd['last_name'] . " " . $sd['first_name'] . " " . $sd['middle_name'];
+                        echo "<tr>
+                                <td>$row[instructor_id]</td>
+                                <td>$name</td>
+                                <td>$row[day]</td>
+                                <td>$row[start_time]</td>
+                                <td>$row[end_time]</td>
+                            </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='3'>No Staff is Available at the selected time.</td></tr>";
+                }
+                echo "</tbody></table>";
             }
             ?>
         </section>
@@ -481,12 +509,45 @@ $mentoring = new Mentoring();
             </table>
         </section>
 
+        <section id="view-backlogs">
+            <a href='./utils/add_backlogs.php' class='btn btn-add'>Add Backlogs</a>
+            <h2>All Backlogs Record</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Subject Name</th>
+                        <th>Year</th>
+                        <th>Semester</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $rows = $marks->getBacklogs();
+
+                    if (count($rows) > 0) {
+                        foreach ($rows as $record) {
+                            echo "<tr><td>" . $record['student_id'] . "</td>
+                              <td>" . $record['name'] . "</td>
+                              <td>" . $record['year'] . "</td>
+                              <td>" . $record['semester'] . "</td>
+                              <td><a href='./utils/remove_backlog.php?id=$record[record_id]'>Remove</a></td>
+                              </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>No Backlogs Records Found.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </section>
+
         <section id="logout">
             <h2>Are you sure want to Logout?</h2>
             <a href='../../logout.php?logout=true' class='logout'>Logout</a>
         </section>
 
-        <!-- TODO: class details should have feature to add subjects just like mentoring -->
     </main>
 </body>
 

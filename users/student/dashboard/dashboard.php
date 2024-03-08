@@ -190,7 +190,7 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
         <section class="backlogs-report">
             <h2>Active Backlogs: </h2>
             <?php
-            $rows = $marks->getBacklogsByStudentId($studentId, 'Active');
+            $rows = $marks->getBacklogsByStudentId($studentId);
 
             echo "<table>
                     <tr>
