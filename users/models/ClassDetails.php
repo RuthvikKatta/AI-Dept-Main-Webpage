@@ -81,11 +81,32 @@ class ClassDetails
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function updateClassDetails($classId, $currentSemester)
+    public function getClassId($year, $section){
+        $statement = $this->dbh->prepare(
+            "SELECT class_id FROM " . $this->classTable ." WHERE year=:year and section=:section" 
+        );
+
+        if (false === $statement) {
+            return [];
+        }
+
+        $result = $statement->execute([
+            ':year' => $year,
+            ':section' => $section
+        ]);
+
+        if (false === $result) {
+            return [];
+        }
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+    public function updateClassDetails($classId, $currentSemester, $lunchHour)
     {
         $statement = $this->dbh->prepare(
             "UPDATE " . $this->classTable . "
-            SET current_semester = :current_semester 
+            SET current_semester = :current_semester, 
+            lunch_hour = :lunch_hour 
             WHERE class_id = :class_id"
         );
 
@@ -96,6 +117,7 @@ class ClassDetails
         try {
             $statement->execute([
                 'current_semester' => $currentSemester,
+                'lunch_hour' => $lunchHour,
                 'class_id' => $classId,
             ]);
             return true;
@@ -175,5 +197,27 @@ class ClassDetails
         } catch (Exception $e) {
             return false;
         }
+    }
+    public function getLunchHour($year, $section){
+        $statement = $this->dbh->prepare(
+            "SELECT lunch_hour FROM " . $this->classTable . " WHERE year = :year AND section=:section"
+        );
+
+        if (false === $statement) {
+            return "";
+        }
+
+        $result = $statement->execute([
+            ":year" => $year,
+            ":section" => $section
+        ]);
+
+        if (false === $result) {
+            return "";
+        }
+
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $row['lunch_hour'];
     }
 }

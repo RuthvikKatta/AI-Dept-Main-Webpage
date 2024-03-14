@@ -94,6 +94,12 @@ if(empty($classId)) {
                 <option value='2' <?php echo ($classDetailsData['current_semester'] == '2') ? 'selected' : ''; ?>>2</option>
             </select>
 
+            <label for='lunch_hour'>Lunch Hour: </label>
+            <select id='lunch_hour' name='lunch_hour'>
+                <option value='4' <?php echo ($classDetailsData['lunch_hour'] == '4') ? 'selected' : ''; ?>>12:00 - 12:45</option>
+                <option value='5' <?php echo ($classDetailsData['lunch_hour'] == '5') ? 'selected' : ''; ?>>1:00 - 1:45</option>
+            </select>
+
             <input type='submit' name='update-details' value='Update Details'>
             <?php
         }
@@ -102,8 +108,9 @@ if(empty($classId)) {
     <?php
     if (isset($_POST['update-details'])) {
         $updatedSemester = $_POST['updated_semester'];
+        $lunchHour = $_POST['lunch_hour'];
 
-        $success = $classDetails->updateClassDetails($classId, $updatedSemester);
+        $success = $classDetails->updateClassDetails($classId, $updatedSemester, $lunchHour);
 
         $message = $success ? "Class details updated successfully" : "Failed to update Class details";
 

@@ -246,13 +246,14 @@ class Mentoring
                 continue;
             }
 
-            $addResult = $addStatement->execute([
-                ":mentor_id" => $mentorId,
-                ":mentee_id" => $menteeId
-            ]);
-
-            if (false === $addResult) {
-                $message .= "$menteeId Doesn't Exist. \n";
+            try {
+                $addStatement->execute([
+                    ":mentor_id" => $mentorId,
+                    ":mentee_id" => $menteeId
+                ]);
+                $message .= $menteeId." Assigned Successfully";
+            } catch(Exception $e) {
+                $message .= $menteeId." Doesn't Exist";
             }
         }
 

@@ -23,7 +23,7 @@ class Leave
     {
 
         $statement = $this->dbh->prepare(
-            'INSERT INTO ' . $this->LeaveRecordTable . ' (applied_by, applied_from, applied_to, total_days, reason, adjusted_withd_by) 
+            'INSERT INTO ' . $this->LeaveRecordTable . ' (applied_by, applied_from, applied_to, total_days, reason, adjusted_with) 
                     VALUES (:applied_by, :applied_from, :applied_to, :total_days, :reason, :adjusted_with)'
         );
 
@@ -67,13 +67,13 @@ class Leave
     public function updateLeaveStatus($leaveId, $status)
     {
         $statement = $this->dbh->prepare(
-            "UPDATE TABLE " . $this->LeaveRecordTable . "
+            "UPDATE " . $this->LeaveRecordTable . "
             SET status = :status
             WHERE leave_id = :leave_id"
         );
 
         if (false === $statement) {
-            return false;
+            return "Internal Error";
         }
 
         $result = $statement->execute([
@@ -82,7 +82,28 @@ class Leave
         ]);
 
         if ($result === false) {
-            throw new Exception('Error executing the update statement: ');
+            return "Leave Rejected";
         }
+        return "Leave Accepted";
+    }
+    public function getAppliedLeaves()
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT * FROM " . $this->LeaveRecordTable . " WHERE status = 'Pending'"
+        );
+
+        if (false === $statement) {
+            return [];
+        }
+
+        $result = $statement->execute();
+
+        if (false === $result) {
+            return [];
+        }
+
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $rows;
     }
 }

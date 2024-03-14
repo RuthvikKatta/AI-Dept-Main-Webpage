@@ -128,6 +128,32 @@ main>section {
     font-size: 35px;
 }
 
+/* Timetable section style */
+
+#timetable.active {
+    padding: 2rem;
+}
+
+#timetable table,
+#timetable th,
+#timetable td {
+    border: 2px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    padding: 15px;
+}
+
+#timetable th {
+    color: var(--white);
+    background-color: var(--red);
+}
+
+#timetable td {
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 /* Marks sections styles */
 
 #marks.active {
@@ -279,7 +305,7 @@ main>section {
     gap: 5px;
     padding: 5px;
     flex-grow: 1;
-    overflow-x: auto;   
+    overflow-x: auto;
 }
 
 #mentoring .comment,
@@ -320,7 +346,7 @@ main>section {
     list-style: none;
 }
 
-#mentoring .toggle-sections ul{
+#mentoring .toggle-sections ul {
     display: flex;
     width: 100%;
     justify-content: space-around;

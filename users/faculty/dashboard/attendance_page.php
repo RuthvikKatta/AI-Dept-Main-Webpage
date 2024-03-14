@@ -107,7 +107,7 @@ $subject = new Subject();
                          </div>';
 
                     foreach ($students as $student) {
-                        echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
+                        echo '<label for=' . $student['student_id'] . '>'. $student['student_id'] . ' - ' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                         echo '<input type="checkbox" id="' . $student['student_id'] . '" name="students[]" value="' . $student['student_id'] . '" />';
                     }
                     echo '<input type="hidden" name="subjectId" value="' . $subjectId . '">';
@@ -131,7 +131,7 @@ $subject = new Subject();
                     echo '<form method="post" action="handle_attendance.php">';
                     foreach ($students as $student) {
                         $isChecked = in_array($student['student_id'], $absentStudents) ? '' : 'checked';
-                        echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
+                        echo '<label for=' . $student['student_id'] . '>'. $student['student_id'] . ' - ' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                         echo '<input type="checkbox" id="' . $student['student_id'] . '" name="students[]" value="' . $student['student_id'] . '" ' . $isChecked . ' />';
                     }
 

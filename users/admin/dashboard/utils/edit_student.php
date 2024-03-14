@@ -13,7 +13,7 @@ include '../../../models/Student.php';
 $student = new Student();
 
 $studentId = $_GET['id'];
-if(empty($studentId)) {
+if (empty($studentId)) {
     header("Location: ../dashboard.php#view-students");
 }
 ?>
@@ -99,10 +99,10 @@ if(empty($studentId)) {
             } ?>
 
             <label for='new_profile_picture'>New Profile Picture(JPG, JPEG AND < 1MB): </label>
-            <input type='file' name='new_profile_picture' id='new_profile_picture'>
+                    <input type='file' name='new_profile_picture' id='new_profile_picture'>
 
-            <input type='submit' name='update-details' value='Update Details'>
-            <?php
+                    <input type='submit' name='update-details' value='Update Details'>
+                    <?php
         }
         ?>
     </form>
@@ -130,9 +130,12 @@ if(empty($studentId)) {
             } else if ($_FILES["new_profile_picture"]["size"] > 1 * 1024 * 1024) {
                 $message = "Image Upload Failed. Image Size greater than 1MB.";
             } else {
-                $oldImagePath = "../../../../Database/Student/{$studentId}.jpg";
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                foreach ($allowedTypes as $allowedType) {
+                    $oldImagePath = "../../../../Database/Student/{$staffId}.{$allowedType}";
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                        break;
+                    }
                 }
                 $fileName = $studentId . "." . $fileType;
                 if (move_uploaded_file($_FILES["new_profile_picture"]["tmp_name"], "../../../../Database/Student/" . $fileName)) {

@@ -24,7 +24,7 @@ $staffId = $_GET['id'];
     <link rel="stylesheet" href="../dashboard.style.css" />
     <link rel="shortcut icon" href="../../../assets/images/favicon-icon.png" type="image/x-icon">
 
-    <title>Student Edit Form</title>
+    <title>Staff Edit Form</title>
 </head>
 
 <body>
@@ -148,9 +148,12 @@ $staffId = $_GET['id'];
             } else if ($_FILES["new_profile_picture"]["size"] > 1 * 1024 * 1024) {
                 $message = "Image Upload Failed. Image Size greater than 1MB.";
             } else {
-                $oldImagePath = "../../../../Database/Staff/{$staffId}.jpg";
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                foreach ($allowedTypes as $allowedType) {
+                    $oldImagePath = "../../../../Database/Staff/{$staffId}.{$allowedType}";
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                        break;
+                    }
                 }
                 $fileName = $staffId . "." . $fileType;
                 if (move_uploaded_file($_FILES["new_profile_picture"]["tmp_name"], "../../../../Database/Staff/" . $fileName)) {

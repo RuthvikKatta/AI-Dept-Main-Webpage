@@ -123,7 +123,7 @@ $marks = new Marks();
                     if (count($students) > 0) {
                         echo '<form method="post" action="handle_marks.php">';
                         foreach ($students as $student) {
-                            echo '<label for=' . $student['student_id'] . '>' . $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
+                            echo '<label for=' . $student['student_id'] . '>'. $student['student_id'].' - '. $student['last_name'] . " " . $student['first_name'] . " " . $student['middle_name'] . '</label>';
                             echo '<input type="number" id="' . $student['student_id'] . '" name="students[]"/>';
                         }
 

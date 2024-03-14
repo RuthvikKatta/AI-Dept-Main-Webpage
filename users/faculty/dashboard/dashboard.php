@@ -16,6 +16,7 @@ include '../../models/Subject.php';
 include '../../models/Attendance.php';
 include '../../models/Marks.php';
 include '../../models/ClassDetails.php';
+include '../../models/TimeTable.php';
 
 $Leave = new Leave();
 $Mentoring = new Mentoring();
@@ -25,6 +26,7 @@ $subject = new Subject();
 $attendance = new Attendance();
 $marks = new Marks();
 $classDetails = new ClassDetails();
+$timeTable = new TimeTable();
 
 function validateMarks($str)
 {
@@ -73,6 +75,7 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
     <div class="navigation">
       <ul>
         <li><a href="#profile">Profile</a></li>
+        <li><a href="#timetable">Time Table</a></li>
         <li><a href="#marks">Marks</a></li>
         <li><a href="#attendance">Attendance</a></li>
         <li><a href="#mentoring">Mentoring</a></li>
@@ -128,6 +131,39 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
           </p>
         </div>
       </div>
+    </section>
+
+    <section id="timetable">
+      <h2>Your TimeTable</h2>
+      <table>
+        <thead>
+          <tr height="45px">
+            <th>DAY\TIME</th>
+            <th>9:00-10:00</th>
+            <th>10:00-11:00</th>
+            <th>11:00-12:00</th>
+            <th>12:00-12:45</th>
+            <th>12:45-1:45</th>
+            <th>1:45-2:45</th>
+            <th>2:45-3:45</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $tt = $timeTable->getTimetableForClass('IV', 'A');
+          foreach ($tt as $key => $value) {
+            echo "<tr><th>$key</th>";
+            for ($hour = 1; $hour <= 6; $hour++) {
+              if ($hour == 5) {
+                echo "<th>Lunch</th>";
+              }
+              echo "<td>" . (count($value[$hour]) > 0 ? $value[$hour]['subjectName'] : ' ') . "</td>";
+            }
+            echo "</tr>";
+          }
+          ?>
+        </tbody>
+      </table>
     </section>
 
     <section id="marks">

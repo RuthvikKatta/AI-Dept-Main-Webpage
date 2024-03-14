@@ -128,6 +128,30 @@ main>section.active {
     color: var(--white);
 }
 
+#view-leaves.active {
+    padding: 2rem;
+}
+
+#view-timetable table,
+#view-timetable th,
+#view-timetable td {
+    border: 2px solid black;
+    border-collapse: collapse;
+    text-align: center;
+    padding: 15px;
+}
+
+#view-timetable th {
+    color: var(--white);
+    background-color: var(--red);
+}
+
+#view-timetable td {
+    background-color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 table,
 tr,
 td,
@@ -168,7 +192,7 @@ form {
     border-radius: 10px;
 }
 
-form input[type="submit"] { 
+form input[type="submit"] {
     width: 100%;
     padding: 10px 20px;
     letter-spacing: 2px;
@@ -179,6 +203,10 @@ form input[type="submit"] {
     cursor: pointer;
     grid-column: -1 / 1;
     border-radius: 5px;
+}
+
+form > div{
+    grid-template-columns: -1 / 1;
 }
 
 .form-title {

@@ -90,7 +90,6 @@ if(empty($mentorId)) {
 
             if (count($mentees) > 0) {
 
-
                 foreach ($mentees as $mentee) {
                     $menteeId = $mentee['mentee_id'];
                     $sd = $student->getStudentDetails($menteeId);

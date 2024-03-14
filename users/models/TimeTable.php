@@ -6,27 +6,23 @@ class TimeTable
     private $timeTable = 'timetable';
     public function __construct()
     {
-        $database = 'college_website_test_db';
-        $host = 'localhost';
-        $databaseUsername = 'root';
-        $databaseUserPassword = '';
+        $config = include 'Config.php';
+
+        $host = $config['database']['host'];
+        $database = $config['database']['database_name'];
+        $username = $config['database']['username'];
+        $password = $config['database']['password'];
+
         try {
-
-            $this->dbh =
-                new PDO(
-                    sprintf('mysql:host=%s;dbname=%s', $host, $database),
-                    $databaseUsername,
-                    $databaseUserPassword
-                );
-
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
     }
-    public function getTodaysLeisures($day, $startTime, $endTime)
+    public function getLeisuresByHour($day, $hour)
     {
         $statement = $this->dbh->prepare(
-            "SELECT * FROM " . $this->timeTable . " WHERE day = :day AND start_time >= :start_time AND end_time <= :end_time"
+            "SELECT * FROM " . $this->timeTable . " WHERE day = :day AND hour = :hour"
         );
 
         if (false === $statement) {
@@ -35,8 +31,7 @@ class TimeTable
 
         $result = $statement->execute([
             ":day" => $day,
-            ":start_time" => $startTime,
-            ":end_time" => $endTime,
+            ":hour" => $hour,
         ]);
 
         if (false === $result) {
@@ -48,7 +43,7 @@ class TimeTable
         $teaching = array_unique($rows);
 
         $allFacultyStatement = $this->dbh->prepare(
-            "SELECT staff_id FROM Faculty WHERE role = 'Teaching'"
+            "SELECT staff_id FROM Staff WHERE role = 'Teaching'"
         );
 
         if (false === $allFacultyStatement) {
@@ -63,7 +58,7 @@ class TimeTable
 
         $facultyResult = $allFacultyStatement->fetchAll(PDO::FETCH_ASSOC);
 
-        $allTeachingFaculty  = array_column($facultyResult, 'staff_id');
+        $allTeachingFaculty = array_column($facultyResult, 'staff_id');
 
         return array_unique(array_diff($allTeachingFaculty, $teaching));
     }
@@ -128,5 +123,184 @@ class TimeTable
             }
         } catch (Exception $e) {
         }
+    }
+    function getTimetableForFaculty($facultyId)
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM ". $this->timeTable ." tt
+             LEFT JOIN subject sub on sub.subject_id = tt.subject_id
+             LEFT JOIN class cls on cls.class_id = tt.class_id
+             WHERE instructor_id = :instructor_id"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        $timetable = array(
+            'Monday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Tuesday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Wednesday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Thursday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Friday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Saturday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            )
+        );
+
+        $result = $statement->execute([
+            ':instructor_id' => $facultyId
+        ]);
+
+        if (false === $result) {
+            return false;
+        }
+
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $day = $row['day'];
+            $hour = $row['hour'];
+            $subjectName = $row['name'];
+            $classYear = $row['year'];
+            $classSection = $row['section'];
+
+            $timetable[$day][$hour] = array(
+                'subjectName' => $subjectName,
+                'year' => $classYear,
+                'section' => $classSection
+            );
+        }
+
+        return $timetable;
+    }
+    function getTimetableForClass($year, $section)
+    {
+        $statement = $this->dbh->prepare(
+            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM ". $this->timeTable ." tt
+             LEFT JOIN subject sub on sub.subject_id = tt.subject_id
+             LEFT JOIN class cls on cls.class_id = tt.class_id
+             WHERE cls.year = :year and cls.section = :section"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
+        $timetable = array(
+            'Monday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Tuesday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Wednesday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Thursday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Friday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            ),
+            'Saturday' => array(
+                '1' => array(),
+                '2' => array(),
+                '3' => array(),
+                '4' => array(),
+                '5' => array(),
+                '6' => array()
+            )
+        );
+
+        $result = $statement->execute([
+            ':year' => $year,
+            ':section' => $section,
+        ]);
+
+        if (false === $result) {
+            return false;
+        }
+
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($result as $row) {
+            $day = $row['day'];
+            $hour = $row['hour'];
+            $subjectName = $row['name'];
+            $classYear = $row['year'];
+            $classSection = $row['section'];
+
+            $timetable[$day][$hour] = array(
+                'subjectName' => $subjectName,
+                'year' => $classYear,
+                'section' => $classSection
+            );
+        }
+
+        return $timetable;
     }
 }

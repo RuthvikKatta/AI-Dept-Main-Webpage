@@ -1,5 +1,4 @@
 <?php
-
 include "../../../models/Mentoring.php";
 
 $mentoring = new Mentoring();
@@ -16,10 +15,9 @@ if (isset($_POST['add-mentees'])) {
         $message = $mentoring->assignMentees($mentorId, $menteeIds);
     }
 
-    echo "
-        <script>
-            alert('$message');
-            window.location.href = '../dashboard.php#view-mentoring';
+    echo "<script>
+            alert(`$message`);
+            window.location.href = './edit_mentees.php?id=$mentorId';
         </script>";
 }
 

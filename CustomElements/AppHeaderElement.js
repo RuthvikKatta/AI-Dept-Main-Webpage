@@ -15,7 +15,7 @@ class AppHeaderElement extends HTMLElement {
 		super();
 
 		this.innerHTML = `
-            <div class="logo"></div>
+            <div class="logo" onclick="location.href='/AI-Main-Page/index.html'"></div>
             <h1 class="dept-name">Department of Artificial Intelligence</h1>
             <ul class="navigation-bar">
                 <li><a href="/AI-Main-Page/AI-Department/"> Home </a></li>
