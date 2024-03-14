@@ -30,7 +30,7 @@ class Marks
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         foreach ($studentIds as $index => $student_id) {
@@ -46,7 +46,7 @@ class Marks
                     ':marks_obtained' => $marks_obtained[$index],
                 ])
             ) {
-                throw new Exception(implode(' ', $statement->errorInfo()));
+                return false;
             }
         }
     }
@@ -91,7 +91,7 @@ class Marks
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         foreach ($recordIdsAndMarks as $recordId => $updatedMarks) {
@@ -99,7 +99,7 @@ class Marks
             $statement->bindParam(':record_id', $recordId, PDO::PARAM_INT);
 
             if (!$statement->execute()) {
-                throw new Exception('Failed to execute update statement');
+                return false;
             }
         }
     }

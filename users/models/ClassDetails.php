@@ -111,7 +111,7 @@ class ClassDetails
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         try {

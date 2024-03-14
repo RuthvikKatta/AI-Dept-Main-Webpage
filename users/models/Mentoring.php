@@ -50,7 +50,7 @@ class Mentoring
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         if (
@@ -62,7 +62,7 @@ class Mentoring
                 ]
             )
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
     public function getMenteePrevComments($mentee_id)
@@ -100,7 +100,7 @@ class Mentoring
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         if (
@@ -112,7 +112,7 @@ class Mentoring
                 ]
             )
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
 
         return $this->dbh->lastInsertId();
@@ -125,7 +125,7 @@ class Mentoring
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         if (
@@ -138,7 +138,7 @@ class Mentoring
                 ]
             )
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
     public function getQnA($mentor_id, $mentee_id)
@@ -201,7 +201,7 @@ class Mentoring
         if (false === $deleteStatement) {
             return false;
         }
-        
+
         try {
             false === $deleteStatement->execute([
                 ':mentor_id' => $mentor_id,
@@ -232,11 +232,11 @@ class Mentoring
             }
 
             $checkStatementResult = $checkStatement->fetch(PDO::FETCH_ASSOC);
-            
+
             if (!empty($checkStatementResult)) {
                 $existingMentorId = $checkStatementResult['mentor_id'];
                 $message .= "$menteeId is already assigned to $existingMentorId. \n";
-                continue; 
+                continue;
             }
 
             $addQuery = 'INSERT INTO ' . $this->mentoringTable . ' (mentor_id, mentee_id) VALUES (:mentor_id, :mentee_id)';
@@ -251,9 +251,9 @@ class Mentoring
                     ":mentor_id" => $mentorId,
                     ":mentee_id" => $menteeId
                 ]);
-                $message .= $menteeId." Assigned Successfully";
-            } catch(Exception $e) {
-                $message .= $menteeId." Doesn't Exist";
+                $message .= $menteeId . " Assigned Successfully";
+            } catch (Exception $e) {
+                $message .= $menteeId . " Doesn't Exist";
             }
         }
 

@@ -163,7 +163,7 @@ class Subject
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -187,7 +187,7 @@ class Subject
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         try {

@@ -152,6 +152,15 @@ main>section {
     background-color: white;
     font-weight: bold;
     cursor: pointer;
+    padding: 0.25rem;
+}
+
+#timetable td span{
+    font-size: x-small;
+}
+
+#timetable .adjusted{
+    background-color: #ffff1faa;
 }
 
 /* Marks sections styles */
@@ -402,11 +411,11 @@ form input[type="submit"],
     align-items: center;
     justify-content: center;
     gap: 5rem;
+    padding: 3rem;
 }
 
 #leave .leave-apply {
-    width: 400px;
-    margin: 5rem auto 0;
+    margin: auto 0;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -419,12 +428,17 @@ form input[type="submit"],
     align-items: center;
 }
 
+#leave form div {
+    grid-column: -1 / 1;
+}
+
 #leave label {
     margin-bottom: 2.5px;
 }
 
 #leave input[type="date"],
 #leave input[type="text"],
+#leave input[type="number"],
 #leave select {
     width: 100%;
     padding: 8px;
@@ -460,6 +474,24 @@ form input[type="submit"],
     border-radius: 5px;
     cursor: pointer;
     grid-column: -1 / 1;
+}
+
+#leave #adjustments{
+    grid-column: -1 / 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+#leave #adjustments input,
+#leave #adjustments select {
+    margin: 0;
+}
+
+#leave .adjustment {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 /* Logout section Styles */
@@ -540,4 +572,17 @@ h5 {
     background-color: #4299e1;
     margin: 1rem auto;
     width: fit-content;
+}
+
+#leave .btn-add {
+    margin-inline: auto;
+    width: fit-content;
+    color: var(--white);
+    background-color: #4299e1;
+}
+
+#leave .btn-remove {
+    width: fit-content;
+    color: var(--white);
+    background-color: #ff1616;
 }

@@ -78,7 +78,7 @@ class Student
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -114,7 +114,7 @@ class Student
                 ':student_id' => $studentId,
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
     public function addStudent($newStudentDetails)
@@ -126,7 +126,7 @@ class Student
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         try {

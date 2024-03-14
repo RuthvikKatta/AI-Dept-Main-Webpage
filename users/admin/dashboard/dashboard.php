@@ -47,10 +47,6 @@ $leave = new Leave();
     <link rel="shortcut icon" href="../../../assets/images/favicon-icon.png" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link href="/AI-MAIN-PAGE/Dependencies/datatables.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.1/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.0.1/js/dataTables.js" defer></script>
     <title>Dashboard</title>
 </head>
 
@@ -213,7 +209,7 @@ $leave = new Leave();
                 </thead>
                 <tbody>
                     <?php
-                    $leaves = $leave->getAppliedLeaves();
+                    $leaves = $leave->getAppliedLeaves('Pending');
                     if (count($leaves) > 0) {
                         foreach ($leaves as $l) {
                             $name = $staff->getStaffDetails($l['applied_by']);

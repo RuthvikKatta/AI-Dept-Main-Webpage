@@ -17,7 +17,7 @@ $subject = new Subject();
 $staff = new Staff();
 
 $classId = $_GET['id'];
-if(empty($classId)) {
+if (empty($classId)) {
     header("Location: ../dashboard.php#view-classes");
 }
 ?>
@@ -66,7 +66,7 @@ if(empty($classId)) {
         }
 
         .remove-button:focus {
-            border: 1px solid black; 
+            border: 1px solid black;
         }
     </style>
 </head>
@@ -96,8 +96,10 @@ if(empty($classId)) {
 
             <label for='lunch_hour'>Lunch Hour: </label>
             <select id='lunch_hour' name='lunch_hour'>
-                <option value='4' <?php echo ($classDetailsData['lunch_hour'] == '4') ? 'selected' : ''; ?>>12:00 - 12:45</option>
-                <option value='5' <?php echo ($classDetailsData['lunch_hour'] == '5') ? 'selected' : ''; ?>>1:00 - 1:45</option>
+                <option value='4' <?php echo ($classDetailsData['lunch_hour'] == '4') ? 'selected' : ''; ?>>12:00 - 12:45
+                </option>
+                <option value='5' <?php echo ($classDetailsData['lunch_hour'] == '5') ? 'selected' : ''; ?>>1:00 - 1:45
+                </option>
             </select>
 
             <input type='submit' name='update-details' value='Update Details'>
@@ -186,7 +188,7 @@ if(empty($classId)) {
         <select name="newSubjects[]" id="subject${subjectCount}" required>
             <option value="">Choose Subject</option>
             <?php
-            $subjects = $subject->getAllSubjects();
+            $staff = $staff->getAllStaff();
             if (count($subjects) > 0) {
                 foreach ($subjects as $s) {
                     echo "<option value='" . $s['subject_id'] . "'>" . $s['name'] . "</option>";
@@ -197,7 +199,7 @@ if(empty($classId)) {
         <select name="newTaughtBy[]" id="taught_by${subjectCount}" required>
             <option value="">Choose Faculty</option>
             <?php
-            $staff = $staff->getAllStaff();
+            $subjects = $subject->getAllSubjects();
             if (count($staff) > 0) {
                 foreach ($staff as $s) {
                     echo "<option value='" . $s['staff_id'] . "'>" . $s['last_name'] . " " . $s['first_name'] . " " . $s['middle_name'] . "</option>";

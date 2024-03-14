@@ -164,7 +164,7 @@ class Staff
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([

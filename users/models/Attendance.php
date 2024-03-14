@@ -50,7 +50,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         if (
@@ -61,7 +61,7 @@ class Attendance
                 ':subject_id' => $subject_id,
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
 
         return $this->dbh->lastInsertId();
@@ -73,7 +73,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -95,7 +95,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -117,7 +117,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -140,7 +140,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         foreach ($studentIds as $student_id) {
@@ -152,7 +152,7 @@ class Attendance
                     ':attendance_taken_by' => $attendance_taken_by,
                 ])
             ) {
-                throw new Exception(implode(' ', $statement->errorInfo()));
+                return false;
             }
         }
     }
@@ -163,7 +163,7 @@ class Attendance
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         foreach ($studentIds as $student_id) {
@@ -173,7 +173,7 @@ class Attendance
                     ':attendance_log_no' => $attendance_log_no,
                 ])
             ) {
-                throw new Exception(implode(' ', $statement->errorInfo()));
+                return false;
             }
         }
     }
@@ -242,7 +242,7 @@ class Attendance
     ");
 
         if (!$statement) {
-            throw new Exception('Invalid query statement');
+            return false;
         }
 
         foreach ($subjectIds as $key => $subjectId) {
@@ -296,7 +296,7 @@ class Attendance
     ");
 
         if (!$statement) {
-            throw new Exception('Invalid query statement');
+            return false;
         }
 
         foreach ($subjectIds as $key => $subjectId) {

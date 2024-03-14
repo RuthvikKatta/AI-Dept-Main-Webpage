@@ -18,7 +18,7 @@ include '../../models/Marks.php';
 include '../../models/ClassDetails.php';
 include '../../models/TimeTable.php';
 
-$Leave = new Leave();
+$leave = new Leave();
 $Mentoring = new Mentoring();
 $Student = new Student();
 $staff = new Staff();
@@ -149,21 +149,50 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
           </tr>
         </thead>
         <tbody>
+        <tbody>
           <?php
-          $tt = $timeTable->getTimetableForClass('IV', 'A');
-          foreach ($tt as $key => $value) {
-            echo "<tr><th>$key</th>";
+          $tt = $timeTable->getTimetableForFaculty($facultyId);
+          $adjustments = $leave->getAdjustmentsByFaculty($facultyId);
+
+          $weekdayMap = array(
+            0 => 'Sunday',
+            1 => 'Monday',
+            2 => 'Tuesday',
+            3 => 'Wednesday',
+            4 => 'Thursday',
+            5 => 'Friday',
+            6 => 'Saturday'
+          );
+
+          foreach ($tt as $day => $schedule) {
+            echo "<tr><th>$day</th>";
+
             for ($hour = 1; $hour <= 6; $hour++) {
-              if ($hour == 5) {
+              if ($hour == 4) {
                 echo "<th>Lunch</th>";
               }
-              echo "<td>" . (count($value[$hour]) > 0 ? $value[$hour]['subjectName'] : ' ') . "</td>";
+
+              $adjustmentFound = false;
+              foreach ($adjustments as $adjustment) {
+                $adjustmentWeekday = date('l', strtotime($adjustment['date']));
+
+                if ($adjustmentWeekday == $day && $adjustment['hour'] == $hour) {
+                  echo "<td class='adjusted'>{$adjustment['name']}<br><span>(adjusted)</span></td>";
+                  $adjustmentFound = true;
+                  break; 
+                }
+              }
+
+              if (!$adjustmentFound) {
+                echo "<td>" . (count($schedule[$hour]) > 0 ? ($schedule[$hour]['subjectName']) : ' ') . "</td>";
+              }
             }
             echo "</tr>";
           }
           ?>
         </tbody>
       </table>
+      
     </section>
 
     <section id="marks">
@@ -482,8 +511,20 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
 
     <section id="leave">
       <div class="leave-apply">
-        <h2>Apply for Leave</h2>
+        <h2>Apply for a Leave</h2>
         <form action="./apply_leave.php" method="post">
+          <?php
+          $records = $leave->getAppliedLeavesOfFaculty($facultyId, 'Approved');
+          $leavesLeft = 15;
+          if (count($records) > 0) {
+            foreach ($records as $rec) {
+              $leavesLeft -= intval($rec['total_days']);
+            }
+          }
+          ?>
+
+          <label for="leaves_left">Available Leaves:</label>
+          <input type="text" id="leaves_left" name="leaves_left" value="<?php echo $leavesLeft ?>" disabled required>
 
           <label for="fromDate">From Date:</label>
           <input type="date" id="fromDate" name="fromDate" required onchange="updateDate()">
@@ -497,10 +538,60 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
           <label for="reason">Reason for Leave:</label>
           <textarea id="reason" name="reason" rows="4" required></textarea>
 
-          <label for="adjustedWith">Adjusted With: </label>
-          <textarea id="adjustedWith" name="adjustedWith" rows="2" required></textarea>
-          <p class="note"><strong>Note: </strong>Follow this format while entering 'Adjusted with' column.<br>
-            (Adjusted Faculty Name - Subject - Class hour).<br>Seperate with comma for Multiple Adjustments</p>
+          <div>
+            <h2>Add Adjustments</h2>
+          </div>
+          <div id="adjustments">
+            <div class="adjustment">
+              <input type="date" name="adjustment_date[]" onchange="updateDate()" required>
+
+              <input type="number" name="adjustment_hour[]" min=1 max=6 placeholder="choose Hour" required>
+
+              <select name="adjustment_year[]" required>
+                <option value="">Select Year</option>
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+              </select>
+
+              <select name="adjustment_section[]" required>
+                <option value="">Select Section</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+              </select>
+
+              <select name="adjustment_subject[]" required>
+                <option value="">Select Subject</option>
+                <?php
+                $subjects = $subject->getAllSubjects();
+                if (count($subjects) > 0) {
+                  foreach ($subjects as $s) {
+                    echo "<option value='" . $s['subject_id'] . "'>" . $s['name'] . "</option>";
+                  }
+                }
+                ?>
+              </select>
+
+              <select name="adjustment_faculty[]" required>
+                <option value="">Choose Faculty</option>
+                <?php
+                $staff = $staff->getAllStaff();
+                if (count($staff) > 0) {
+                  foreach ($staff as $s) {
+                    if($s['staff_id'] == $facultyId){
+                      continue;
+                    }
+                    echo "<option value='" . $s['staff_id'] . "'>" . $s['last_name'] . " " . $s['first_name'] . " " . $s['middle_name'] . "</option>";
+                  }
+                }
+                ?>
+              </select>
+
+              <button type="button" class="btn-remove" onclick="removeAdjustment(this)">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add" onclick="addAdjustment()">Add Adjustment</button>
 
           <button type="submit" class="button">Submit Leave Application</button>
         </form>
@@ -515,23 +606,33 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
             <th>Applied To</th>
             <th>Total Days</th>
             <th>Reason</th>
-            <th>Substitute</th>
+            <th>Adjustments</th>
             <th>Status</th>
           </tr>
           <?php
-          $prevRecords = $Leave->getPreviousRecords($facultyId);
+          $prevRecords = $leave->getPreviousRecords($facultyId);
           if (!empty($prevRecords)) {
             foreach ($prevRecords as $record) {
+
+              $adjustmentRecords = $leave->getPreviousAdjustments($record['leave_id']);
+
+              $adjustments = '';
+              if (count($adjustmentRecords) > 0) {
+                foreach ($adjustmentRecords as $rec) {
+                  $adjustments .= $rec['date'] . ", " . $rec['year'] . "-" . $rec['section'] . ", " . $rec['hour'] . " Hr" . ", " . $rec['name'] . ", " . $rec['adjusted_with'] . "<br>";
+                }
+              }
+
               echo '<tr> <td>' . $record['applied_on'] . '</td>';
               echo '<td>' . $record['applied_from'] . '</td>';
               echo '<td>' . $record['applied_to'] . '</td>';
               echo '<td>' . $record['total_days'] . '</td>';
               echo '<td>' . $record['reason'] . '</td>';
-              echo '<td style="width:20rem">' . $record['adjusted_with'] . '</td>';
+              echo '<td>' . $adjustments . '</td>';
               echo '<td>' . $record['status'] . '</td> </tr>';
             }
           } else {
-            echo '<tr><td colspan="7" style="text-align:center;">No Records Found</td></tr>';
+            echo '<tr><td colspan="7" style="text, align:center;">No Records Found</td></tr>';
           }
           ?>
         </table>
@@ -544,7 +645,6 @@ function bestOfThreeAverage($mid1, $assingment1, $mid2, $assingment2, $mid3, $as
     </section>
   </main>
 </body>
-
 <script src="./script.js"></script>
 
 </html>

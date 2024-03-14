@@ -112,7 +112,7 @@ class Project
                 ":mentor_name" => $projectData['mentor_name'],
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
 
         return $this->dbh->lastInsertId();
@@ -131,7 +131,7 @@ class Project
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([
@@ -145,7 +145,7 @@ class Project
         ]);
 
         if ($result === false) {
-            throw new Exception('Error executing the update statement: ');
+            return false;
         }
     }
     public function deleteProjectByProjectId($projectId)
@@ -155,13 +155,15 @@ class Project
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
+
         }
 
         $result = $statement->execute([':project_id' => $projectId]);
 
         if (false === $result) {
-            throw new Exception('Project deletion failed');
+            return false;
+
         }
 
         return true;

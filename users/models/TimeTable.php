@@ -14,7 +14,6 @@ class TimeTable
         $password = $config['database']['password'];
 
         try {
-            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -64,23 +63,23 @@ class TimeTable
     }
     public function editTimetableDetails($timetableId, $updatedDetails)
     {
+        $statement = $this->dbh->prepare(
+            "UPDATE " . $this->timeTable . "
+            SET class_id=:class_id,
+                day=:day,
+                start_time=:start_time,
+                end_time=:end_time,
+                subject_id=:subject_id,
+                instructor_id=:instructor_id
+            WHERE timetable_id = :timetable_id"
+        );
+
+        if (false === $statement) {
+            return false;
+        }
+
         try {
-            $statement = $this->dbh->prepare(
-                "UPDATE " . $this->timeTable . "
-                SET class_id=:class_id,
-                    day=:day,
-                    start_time=:start_time,
-                    end_time=:end_time,
-                    subject_id=:subject_id,
-                    instructor_id=:instructor_id
-                WHERE timetable_id = :timetable_id"
-            );
-
-            if (false === $statement) {
-                throw new Exception('Invalid prepare statement');
-            }
-
-            $result = $statement->execute([
+            $statement->execute([
                 ":class_id" => $updatedDetails["class_id"],
                 ":day" => $updatedDetails["day"],
                 ":start_time" => $updatedDetails["start_time"],
@@ -89,11 +88,9 @@ class TimeTable
                 ":instructor_id" => $updatedDetails["instructor_id"],
                 ':timetable_id' => $timetableId,
             ]);
-
-            if ($result === false) {
-                throw new Exception('Error executing the update statement: ' . $statement->errorInfo()[2]);
-            }
-        } catch (Exception $e) {
+            return true;
+        } catch (Exception $e){
+            return $e->getMessage();
         }
     }
     public function addNewTimetableRecord($newTimetableDetails)
@@ -106,7 +103,7 @@ class TimeTable
             );
 
             if (false === $statement) {
-                throw new Exception('Invalid prepare statement');
+                return false;
             }
 
             $result = $statement->execute([
@@ -119,15 +116,16 @@ class TimeTable
             ]);
 
             if ($result === false) {
-                throw new Exception('Error executing the insert statement: ' . $statement->errorInfo()[2]);
+                return false;
             }
         } catch (Exception $e) {
+            return $e->getMessage();
         }
     }
     function getTimetableForFaculty($facultyId)
     {
         $statement = $this->dbh->prepare(
-            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM ". $this->timeTable ." tt
+            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM " . $this->timeTable . " tt
              LEFT JOIN subject sub on sub.subject_id = tt.subject_id
              LEFT JOIN class cls on cls.class_id = tt.class_id
              WHERE instructor_id = :instructor_id"
@@ -216,7 +214,7 @@ class TimeTable
     function getTimetableForClass($year, $section)
     {
         $statement = $this->dbh->prepare(
-            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM ". $this->timeTable ." tt
+            "SELECT tt.day, tt.hour, sub.name, cls.year, cls.section FROM " . $this->timeTable . " tt
              LEFT JOIN subject sub on sub.subject_id = tt.subject_id
              LEFT JOIN class cls on cls.class_id = tt.class_id
              WHERE cls.year = :year and cls.section = :section"

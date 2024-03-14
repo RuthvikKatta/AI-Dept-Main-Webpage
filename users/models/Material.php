@@ -130,7 +130,7 @@ class Material
                 ':material_id' => $fileId,
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
 }

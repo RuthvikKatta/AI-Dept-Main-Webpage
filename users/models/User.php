@@ -30,7 +30,7 @@ class User
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         if (
@@ -40,7 +40,7 @@ class User
                 ':role' => $role,
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
 

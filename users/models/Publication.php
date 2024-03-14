@@ -114,7 +114,7 @@ class Publication
                 ":role_type" => $publicationData['role_type']
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
 
         return $this->dbh->lastInsertId();
@@ -126,13 +126,13 @@ class Publication
         );
 
         if (false === $statement) {
-            throw new Exception('Invalid prepare statement');
+            return false;
         }
 
         $result = $statement->execute([':publication_id' => $publicationId]);
 
         if (false === $result) {
-            throw new Exception('Publication deletion failed');
+            return false;
         }
 
         return true;

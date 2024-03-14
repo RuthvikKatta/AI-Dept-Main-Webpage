@@ -42,6 +42,22 @@ list.forEach((item) => {
     item.addEventListener("click", activelink);
 });
 
+function addAdjustment() {
+    var adjustmentsDiv = document.getElementById('adjustments');
+    var firstAdjustmentDiv = adjustmentsDiv.querySelector('.adjustment');
+    var adjustmentDiv = document.createElement('div');
+    adjustmentDiv.className = 'adjustment';
+    adjustmentDiv.innerHTML = firstAdjustmentDiv.innerHTML;
+    adjustmentsDiv.appendChild(adjustmentDiv);
+}
+
+function removeAdjustment(button) {
+    var adjustmentDiv = button.parentElement;
+    if (adjustmentDiv.parentElement.children.length > 1) {
+        adjustmentDiv.parentElement.removeChild(adjustmentDiv);
+    }
+}
+
 function calculateTotalDays() {
     var fromDate = new Date(document.getElementById('fromDate').value);
     var toDate = new Date(document.getElementById('toDate').value);
@@ -55,7 +71,11 @@ function calculateTotalDays() {
 function updateDate() {
     let fromDateInput = document.querySelector('[name=fromDate]')
     let toDateInput = document.querySelector('[name=toDate]')
+    let adjustmentDateInputs = document.querySelectorAll('[name="adjustment_date[]"]');
     toDateInput.min = new Date(fromDateInput.value).toISOString().split("T")[0]
+    adjustmentDateInputs.forEach((e) => {
+        e.min = new Date(fromDateInput.value).toISOString().split("T")[0]
+    })
 }
 
 let fromDateInput = document.querySelector('[name=fromDate]')

@@ -75,7 +75,7 @@ class Media
                 ':id' => $imageId,
             ])
         ) {
-            throw new Exception(implode(' ', $statement->errorInfo()));
+            return false;
         }
     }
 }
