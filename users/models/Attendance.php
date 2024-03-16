@@ -132,11 +132,11 @@ class Attendance
 
         return $rows;
     }
-    public function addAbsentLogs(array $studentIds, $attendance_log_no, $subject_id, $attendance_taken_by)
+    public function addAbsentLogs(array $studentIds, $attendance_log_no, $subject_id)
     {
         $statement = $this->dbh->prepare(
-            'INSERT INTO ' . $this->absenteesLogTable . ' (student_id, attendance_log_no, subject_id, attendance_taken_by) 
-        VALUES (:student_id, :attendance_log_no, :subject_id, :attendance_taken_by)'
+            'INSERT INTO ' . $this->absenteesLogTable . ' (student_id, attendance_log_no, subject_id) 
+        VALUES (:student_id, :attendance_log_no, :subject_id)'
         );
 
         if (false === $statement) {
@@ -149,7 +149,6 @@ class Attendance
                     ':student_id' => $student_id,
                     ':attendance_log_no' => $attendance_log_no,
                     ':subject_id' => $subject_id,
-                    ':attendance_taken_by' => $attendance_taken_by,
                 ])
             ) {
                 return false;

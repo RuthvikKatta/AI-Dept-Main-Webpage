@@ -14,6 +14,7 @@ class TimeTable
         $password = $config['database']['password'];
 
         try {
+            $this->dbh = new PDO("mysql:host=$host;dbname=$database", $username, $password);
         } catch (PDOException $e) {
             die($e->getMessage());
         }
@@ -89,7 +90,7 @@ class TimeTable
                 ':timetable_id' => $timetableId,
             ]);
             return true;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }

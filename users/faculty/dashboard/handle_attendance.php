@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $absentStudentIds = array_diff($studentIds, $presentStudentIds);
 
         $insertedLogNo = $attendance->addAttendanceLog($facultyId, $year, $section, $subjectId);
-        $attendance->addAbsentLogs($absentStudentIds, $insertedLogNo, $subjectId, $facultyId);
+        $attendance->addAbsentLogs($absentStudentIds, $insertedLogNo, $subjectId);
 
     } else if (isset($_POST['editAttendance'])) {
 
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // adding student absent logs if edited as absent
         $editPresentStudentIds = array_diff($absentStudentIds, $prevAbsentStudentIds);
         if (count($editPresentStudentIds) > 0) {
-            $attendance->addAbsentLogs($editPresentStudentIds, $attendance_log_no, $subjectId, $facultyId);
+            $attendance->addAbsentLogs($editPresentStudentIds, $attendance_log_no, $subjectId);
         }
     }
 
