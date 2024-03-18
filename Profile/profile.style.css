@@ -1,0 +1,27 @@
+.profile-container {
+    margin: 2rem 4rem;
+    padding: 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr;
+    gap: 1.5rem;
+    align-items: center;
+    border: 2px solid hsl(354, 74%, 49%);
+    border-radius: 10px;
+}
+
+.profile-name{
+    color: hsl(354, 74%, 49%);
+}
+
+.profile {
+    width: 15rem;
+}
+
+.profile-image img {
+    width: 100%;
+    border-radius: 100%;
+}
+
+.title {
+    font-size: 35px;
+}

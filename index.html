@@ -1,98 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VJIT</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="shortcut icon"
+      href="./assets/Images/favicon-icon.png"
+      type="image/x-icon"
+    />
+    <style>
+      .additional-links {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 65%;
+      }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artificial Intelligence - AI</title>
-    <link rel="shortcut icon" href="./assets/favicon-icon.png" type="image/x-icon">
+      .additional-links ul,
+      a {
+        list-style: none;
+        color: #fff;
+        display: flex;
+        gap: 2rem;
+      }
 
-    <link rel="stylesheet" href="./style.css">
+      .additional-links ul li:first-child {
+        flex-basis: 460px;
+      }
 
-    <script src="https://kit.fontawesome.com/e4eda60636.js" crossorigin="anonymous"></script>
-</head>
+      .carousal-container {
+        width: 90%;
+        margin: 2rem auto;
+      }
+    </style>
+  </head>
+  <body>
+    <app-header>
+      <div class="logo"></div>
+      <div class="additional-links">
+        <ul>
+          <li>EAMCET / ICET / PGECET CODE: VJIT</li>
+          <li><a href="#">Online Fee</a></li>
+          <li><a href="#">Degree Verification</a></li>
+          <li><a href="#">VJITSAT</a></li>
+          <li><a href="#">Admissions</a></li>
+        </ul>
+      </div>
+      <ul class="navigation-bar">
+        <li><a href="/AI-Main-Page/"> About us </a></li>
+        <li class="dropdown">
+          Academics
+          <img
+            class="dropdown-icons"
+            src="/AI-Main-Page/assets/Icons/caret-up-solid.svg"
+            width="10"
+          />
+          <div class="dropdown-content">
+            <a href="/AI-Main-Page/AI-Department">AI</a>
+            <a href="#">AI & DS</a>
+            <a href="#">CSE</a>
+            <a href="#">CSE (DS)</a>
+            <a href="#">CSE (AI & ML)</a>
+            <a href="#">IT</a>
+            <a href="#">ECE</a>
+            <a href="#">EEE</a>
+            <a href="#">Civil</a>
+            <a href="#">Mechanical</a>
+            <a href="#">MBA</a>
+          </div>
+        </li>
+        <li class="dropdown">
+          Research
+          <img
+            class="dropdown-icons"
+            src="/AI-Main-Page/assets/Icons/caret-up-solid.svg"
+            width="10"
+          />
+          <div class="dropdown-content">
+            <a href="#"> Research and Development </a>
+            <a href="#"> Expertise </a>
+            <a href="#"> Projects & Grants </a>
+            <a href="#"> Publications </a>
+            <a href="#"> Patents </a>
+            <a href="#"> Consultancy </a>
+            <a href="#"> Reasearch Scholar </a>
+          </div>
+        </li>
+        <li><a href="#"> Placements </a></li>
+        <li><a href="#"> Examinations </a></li>
+        <li><a href="#"> Campus Life </a></li>
+      </ul>
+    </app-header>
+    <div class="carousal-container">
+      <div class="carousal">
+        <img
+          class="carousal-controller move-left"
+          src="./assets/Icons/chevron-left-solid.svg"
+          onclick="showAdjacentSlides(true)"
+          width="35"
+          alt="left-move-icon"
+        />
 
-<body>
-    <app-header></app-header>
-
-    <div class="container" id="Home">
-        <div class="vision-and-mission">
-            <div class="vision">
-                <h1>Vision</h1>
-                <p>To evolve as a renowned department, producing artificial intelligence developers with excellence
-                    in
-                    education, interdisciplinary participation, industry preparedness and research for greater cause
-                    of
-                    society.</p>
-            </div>
-            <div class="mission">
-                <h1>Mission</h1>
-                <ul>
-                    <li>Provide ideal training using inventive concepts and technologies in Artificial Intelligence
-                        (AI)</li>
-                    <li>Transform the students into technically competent and socially responsible professionals
-                    </li>
-                    <li>Inculcate professional ethics and values, leadership and team building skills to address
-                        industrial and societal concerns</li>
-                    <li>Model the department as a front-runner in AI education and research by establishing centers
-                        of excellence</li>
-                </ul>
-            </div>
+        <div class="mySlides fade" style="display: block">
+          <img src="./Database/Carousal Images/Image5.jpg" style="width: 100%" />
         </div>
 
-        <div class="right-content">
-
-            <div class="carousal-container">
-                <h1>Gallery of AI</h1>
-                <div class="carousal">
-                    <div class="mySlides fade" style="display: block;">
-                        <img src="https://picsum.photos/id/168/1080/608" style="width:100%">
-                    </div>
-
-                    <div class="mySlides fade">
-                        <img src="https://picsum.photos/id/321/1080/608" style="width:100%">
-                    </div>
-
-                    <div class="mySlides fade">
-                        <img src="https://picsum.photos/id/652/1080/608" style="width:100%">
-                    </div>
-
-                    <div class="mySlides fade">
-                        <img src="https://picsum.photos/id/152/1080/608" style="width:100%">
-                    </div>
-                </div>
-                <div class="carousal-controller">
-                    <span class="dot current" onclick="currentSlide(1)"></span>
-                    <span class="dot" onclick="currentSlide(2)"></span>
-                    <span class="dot" onclick="currentSlide(3)"></span>
-                    <span class="dot" onclick="currentSlide(4)"></span>
-                </div>
-            </div>
-
-            <div class="about">
-                <h1>Head of the Department</h1>
-                <div class="image-container">
-                    <img src="./assets/Image of HOD.jpeg" alt="Image of HOD" width="200">
-                    <p>Dr. A. Obulesh</p>
-                    <p>M.Tech, Ph.D</p>
-                </div>
-                <p class="about-hod"><span>Dr. A. Obulesh</span> working as Assoc. Prof. at Vidya Jyothi Institute of
-                    Technology, in the Dept. of
-                    Artificial Intelligence has an incredible experience of 14 years in academics under various
-                    capacities. He received his Ph.D. in Computer Science & Engineering from Jawaharlal Nehru
-                    Technological University, Kakinada (JNTUK), India. The M.Tech. in CSE from Rajeev Gandhi Memorial
-                    College of Engineering and Technology(RGMCET), Nandyal which is affiliated to JNT University,
-                    Hyderabad, in 2006.<br>
-                    He has published 32 research papers in various National, International Scopus/ SCI journals and
-                    conferences proceedings. He worked as Convener for Artificial Intelligence and Machine learning
-                    Research Wing and he established Machine Learning and Artificial Intelligence (MALAI) Club in
-                    association with Wave Labs in Anurag University (AU), Hyderabad within the Department.
-                </p>
-            </div>
+        <div class="mySlides fade">
+          <img src="./Database/Carousal Images/Image6.jpg" style="width: 100%" />
         </div>
+
+        <div class="mySlides fade">
+          <img src="./Database/Carousal Images/Image7.jpg" style="width: 100%" />
+        </div>
+
+        <div class="mySlides fade">
+          <img src="./Database/Carousal Images/Image8.jpg" style="width: 100%" />
+        </div>
+
+        <img
+          class="carousal-controller move-right"
+          src="./assets/Icons/chevron-right-solid.svg"
+          onclick="showAdjacentSlides(false)"
+          width="35"
+          alt="right-move-icon"
+        />
+      </div>
     </div>
-</body>
-<script src="./Elements.js"></script>
-<script src="./script.js"></script>
-
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-logo">
+          <img src="./assets/Icons/Admissions.jpg" alt="Admissions" />
+        </div>
+        <h2 class="card-title">Admissions</h2>
+        <p class="card-content">
+          Start your journey towards a rewarding career in engineering today by
+          joining a dynamic community of problem-solvers and gain access to an
+          exceptional education.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-logo">
+          <img src="./assets/Icons/Campus-Life.jpg" alt="Campus-Life" />
+        </div>
+        <h2 class="card-title">Campus Life</h2>
+        <p class="card-content">
+          Experience an engaging and Vibrant campus life filled with diverse
+          extracurricular activities, clubs, and events that complement your
+          academic journey and help you develop crucial leadership and teamwork
+          skills.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-logo">
+          <img src="./assets/Icons/Academics.jpg" alt="Academics" />
+        </div>
+        <h2 class="card-title">Academics</h2>
+        <p class="card-content">
+          Experience a world-class education with our rigorous academic
+          programs, cutting-edge research opportunities, and dedicated faculty,
+          preparing you to be at the forefront of the industry.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-logo">
+          <img src="./assets/Icons/Infrastructure.jpg" alt="Infrastructure" />
+        </div>
+        <h2 class="card-title">Infrastructure</h2>
+        <p class="card-content">
+          World-class learning environment with state-of-the-art infrastructure,
+          cutting-edge technologies, and modern facilities that provide you with
+          the resources you need to succeed in your academic pursuits.
+        </p>
+      </div>
+    </div>
+  </body>
+  <script src="./script.js"></script>
 </html>
